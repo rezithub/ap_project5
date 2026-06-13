@@ -210,11 +210,11 @@ void read_casual_match_readiness(string remaining_line, string &is_ready)
         throw BadRequestException();
     }
 }
-void read_answer_invitation(string remaining_line, string &invitation_id)
+void read_id(string remaining_line, string &invitation_id)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
-    bool find_invitation = false;
+    bool find_id = false;
     string key;
     while (ss >> key)
     {
@@ -222,10 +222,10 @@ void read_answer_invitation(string remaining_line, string &invitation_id)
         {
             read_quote_symbole(ss);
             getline(ss, invitation_id, QUOTE_SEPERATOR);
-            find_invitation = true;
+            find_id = true;
         }
     }
-    if (!find_invitation)
+    if (!find_id)
     {
         throw BadRequestException();
     }
@@ -335,14 +335,14 @@ void CommandHandler::post_process(string action, string remaining_line)
     else if (action == "start_match")
     {
         string invitation_id;
-        read_answer_invitation(remaining_line, invitation_id);
+        read_id(remaining_line, invitation_id);
         game->start_match(invitation_id);
         cout << "OK" << endl;
     }
     else if (action == "reject_invitation")
     {
         string invitation_id;
-        read_answer_invitation(remaining_line, invitation_id);
+        read_id(remaining_line, invitation_id);
         game->reject_invitation(invitation_id);
         cout << "OK" << endl;
     }
@@ -359,6 +359,13 @@ void CommandHandler::post_process(string action, string remaining_line)
         string action;
         read_action(remaining_line, action);
         game->do_action(action);
+        cout << "OK" << endl;
+    }
+    else if (action == "dismiss_report")
+    {
+        string report_id;
+        read_id(remaining_line, report_id);
+        game->dismiss_report(report_id);
         cout << "OK" << endl;
     }
     else

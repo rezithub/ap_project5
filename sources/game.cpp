@@ -34,7 +34,7 @@ void Game::add_report(std::string username, std::string reason)
         throw NotFoundException();
     }
     Report *the_report = new Report(next_report_id, logged_in_user->get_username(), username, reason);
-    reports[next_report_id]=the_report;
+    reports[next_report_id] = the_report;
     next_report_id++;
 }
 void Game::show_user_invitations()
@@ -55,7 +55,7 @@ void Game::show_reports()
     {
         throw EmptyException();
     }
-    for (auto & [id,the_report]: reports)
+    for (auto &[id, the_report] : reports)
     {
         the_report->print_detailes();
     }
@@ -136,8 +136,28 @@ void Game::show_match_status()
     CasualMatch *the_match = it->second;
     the_match->print_status(logged_in_user);
 }
-void Game::dismiss_report(string report_id){
-
+void Game::dismiss_report(string report_id)
+{
+    if (logged_in_user == NULL || logged_in_user->user_type() == PLAYER_USER)
+    {
+        throw PermissionDeniedException();
+    }
+    int id;
+    try
+    {
+        id = stoi(report_id);
+    }
+    catch (const exception &e)
+    {
+        throw BadRequestException();
+    }
+    if (reports.count(id) == 0)
+    {
+        throw NotFoundException();
+    }
+    Report *the_report = reports.at(id);
+    reports.erase(id);
+    delete the_report;
 }
 bool Game::check_invitation(string intivation_id)
 {
@@ -426,7 +446,8 @@ void Game::post_inviation(string opponent_username, string match_type)
     {
         throw PermissionDeniedException();
     }
-    if(the_opponent_user->check_block(the_player)){
+    if (the_opponent_user->check_block(the_player))
+    {
         throw NotFoundException();
     }
     Invitation *the_invitation = new Invitation(the_player, the_opponent_user, match_type, next_invitation_id);
