@@ -104,6 +104,8 @@ void Player::show_received_invitations()
 void Player::print_detailes()
 {
     cout << "username: " << '"' << username << '"' << endl
+         << "Level: " << level << endl
+         << "RP: " << rp << endl
          << "XP: " << xp << endl
          << "Total wins: " << total_wins << endl
          << "Total losses: " << total_loses << endl;
