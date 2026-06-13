@@ -73,3 +73,6 @@ void User::print_detailes()
 {
     throw PermissionDeniedException();
 }
+void User::block(User* the_user,string status){
+    throw PermissionDeniedException();
+}

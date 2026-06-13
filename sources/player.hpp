@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 #include "constants.hpp"
 #include "user.hpp"
@@ -18,7 +19,7 @@ private:
     std::string player_status;
     std::string level;
     std::vector<Invitation *> received_invitations;
-    vector<User*> blocked_users;
+    std::set<User*> blocked_users;
 
 public:
     Player(std::string _username, std::string _password, int _xp, int _rp);
@@ -38,6 +39,7 @@ public:
     void win_match() override;
     void lose_match() override;
     void show_received_invitations() override;
+    void block(User* the_user,std::string status) override;
 };
 
 #endif

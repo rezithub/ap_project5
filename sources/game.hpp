@@ -41,6 +41,7 @@ public:
     void do_action(std::string action);
     void show_match_status();
     void dismiss_report(std::string report_id);
+    void block_user(std::string username,std::string status);
     void load_players(const std::string &filepath);
     void load_admins(const std::string &filepath);
     void add_report(std::string username, std::string reason);

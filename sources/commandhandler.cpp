@@ -244,10 +244,6 @@ void read_report(string remaining_line, string &username, string &reason)
         if (key == "username")
         {
             username = value;
-            if (username.empty())
-            {
-                throw BadRequestException();
-            }
             find_username = true;
         }
         else if (key == "reason")
@@ -285,6 +281,36 @@ void read_action(string remaining_line, string &action)
         }
     }
     if (!find_action)
+    {
+        throw BadRequestException();
+    }
+}
+void fill_block_detailes(string remaining_line, string &username, string &status)
+{
+    stringstream ss(remaining_line);
+    read_question_symbole(ss);
+    string key;
+    bool find_username = false, find_status = false;
+    while (ss >> key)
+    {
+        read_quote_symbole(ss);
+        string value;
+        getline(ss, value, QUOTE_SEPERATOR);
+        if (key == "username")
+        {
+            username = value;
+            find_username = true;
+        }
+        else if (key == "status")
+        {
+            status = value;
+            if(status!="blocked"&&status!="unblocked"){
+                throw BadRequestException();
+            }
+            find_status = true;
+        }
+    }
+    if (!find_username || !find_status)
     {
         throw BadRequestException();
     }
@@ -366,6 +392,14 @@ void CommandHandler::post_process(string action, string remaining_line)
         string report_id;
         read_id(remaining_line, report_id);
         game->dismiss_report(report_id);
+        cout << "OK" << endl;
+    }
+    else if (action == "block")
+    {
+        string username;
+        string status;
+        fill_block_detailes(remaining_line,username,status);
+        game->block_user(username,status);
         cout << "OK" << endl;
     }
     else

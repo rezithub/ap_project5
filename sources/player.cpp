@@ -110,3 +110,11 @@ void Player::print_detailes()
          << "Total wins: " << total_wins << endl
          << "Total losses: " << total_loses << endl;
 }
+void Player::block(User* the_user,string status){
+    if(status==BLOCKED_STATUS){
+        blocked_users.insert(the_user);
+    }
+    else if(status==UNBLOCKED_STATUS){
+        blocked_users.erase(the_user);
+    }
+}
