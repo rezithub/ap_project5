@@ -18,7 +18,7 @@ class Game
 {
 private:
     std::map<std::string, User *> users;
-    std::vector<Report *> reports;
+    std::map<int,Report *> reports;
     std::map<int, Invitation *> invitations;
     std::map<std::string, CasualMatch *> users_matches;
     int next_invitation_id;
@@ -40,6 +40,7 @@ public:
     void post_inviation(std::string opponent_username, std::string match_type);
     void do_action(std::string action);
     void show_match_status();
+    void dismiss_report(std::string report_id);
     void load_players(const std::string &filepath);
     void load_admins(const std::string &filepath);
     void add_report(std::string username, std::string reason);

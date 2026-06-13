@@ -34,7 +34,7 @@ void Game::add_report(std::string username, std::string reason)
         throw NotFoundException();
     }
     Report *the_report = new Report(next_report_id, logged_in_user->get_username(), username, reason);
-    reports.push_back(the_report);
+    reports[next_report_id]=the_report;
     next_report_id++;
 }
 void Game::show_user_invitations()
@@ -55,7 +55,7 @@ void Game::show_reports()
     {
         throw EmptyException();
     }
-    for (Report *the_report : reports)
+    for (auto & [id,the_report]: reports)
     {
         the_report->print_detailes();
     }
@@ -135,6 +135,9 @@ void Game::show_match_status()
     }
     CasualMatch *the_match = it->second;
     the_match->print_status(logged_in_user);
+}
+void Game::dismiss_report(string report_id){
+
 }
 bool Game::check_invitation(string intivation_id)
 {
@@ -388,11 +391,10 @@ Game::~Game()
     {
         delete it->second;
     }
-    for (Report *the_report : reports)
+    for (auto it = reports.begin(); it != reports.end(); it++)
     {
-        delete the_report;
+        delete it->second;
     }
-
     for (auto it = invitations.begin(); it != invitations.end(); it++)
     {
         delete it->second;
