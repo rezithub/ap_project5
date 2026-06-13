@@ -17,6 +17,7 @@ public:
     std::string get_password();
     std::string get_username();
     virtual int get_xp();
+    virtual bool check_block(User *the_user);
     virtual int get_rp();
     virtual void set_xp(int newxp);
     virtual bool get_readiness_status() = 0;

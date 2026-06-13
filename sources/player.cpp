@@ -46,6 +46,14 @@ string Player::get_level()
 int Player::get_rp(){
     return rp;
 }
+bool Player::check_block(User* the_opponent){
+    for(auto the_user : blocked_users){
+        if(the_user==the_opponent){
+            return true;
+        }
+    }
+    return false;
+}
 void Player::set_player_status(string the_status)
 {
     player_status = the_status;

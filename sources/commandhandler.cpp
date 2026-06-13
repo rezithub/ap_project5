@@ -137,13 +137,13 @@ void CommandHandler::get_process(string action, string remaining_line)
     {
         string show_type;
         read_match_detailes(remaining_line, show_type);
-        game->show_opponents(show_type,"casual");
+        game->show_opponents(show_type, "casual");
     }
     else if (action == "ranked_match_opponents")
     {
         string show_type;
         read_match_detailes(remaining_line, show_type);
-        game->show_opponents(show_type,"ranked");
+        game->show_opponents(show_type, "ranked");
     }
     else if (action == "profile")
     {
@@ -325,7 +325,7 @@ void CommandHandler::post_process(string action, string remaining_line)
         string opponent_username;
         string match_type;
         fill_invitation_detailes(opponent_username, match_type, remaining_line);
-        if (match_type != "casual")
+        if (match_type != "casual" && match_type != "ranked")
         {
             throw BadRequestException();
         }

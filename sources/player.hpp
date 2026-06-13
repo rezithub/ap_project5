@@ -18,6 +18,7 @@ private:
     std::string player_status;
     std::string level;
     std::vector<Invitation *> received_invitations;
+    vector<User*> blocked_users;
 
 public:
     Player(std::string _username, std::string _password, int _xp, int _rp);
@@ -26,6 +27,7 @@ public:
     bool get_readiness_status() override;
     int get_xp() override;
     int get_rp() override;
+    bool check_block(User* the_opponent) override;
     std::string get_level() override;
     void set_xp(int newxp) override;
     void add_invitation(Invitation *the_invitation) override;

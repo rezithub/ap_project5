@@ -424,6 +424,9 @@ void Game::post_inviation(string opponent_username, string match_type)
     {
         throw PermissionDeniedException();
     }
+    if(the_opponent_user->check_block(the_player)){
+        throw NotFoundException();
+    }
     Invitation *the_invitation = new Invitation(the_player, the_opponent_user, match_type, next_invitation_id);
     the_opponent_user->add_invitation(the_invitation);
     invitations[next_invitation_id] = the_invitation;
