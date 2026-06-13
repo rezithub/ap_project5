@@ -20,6 +20,12 @@ string User::get_player_status()
 {
     throw PermissionDeniedException();
 }
+string User::get_level(){
+    throw PermissionDeniedException();
+}
+int User::get_rp(){
+    throw PermissionDeniedException();
+}
 void User::remove_invitation(Invitation *the_invitation)
 {
     throw PermissionDeniedException();

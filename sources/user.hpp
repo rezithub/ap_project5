@@ -17,10 +17,12 @@ public:
     std::string get_password();
     std::string get_username();
     virtual int get_xp();
+    virtual int get_rp();
     virtual void set_xp(int newxp);
     virtual bool get_readiness_status() = 0;
     virtual void set_readiness_status(std::string the_status);
     virtual std::string get_player_status();
+    virtual std::string get_level();
     virtual void add_invitation(Invitation *the_invitation);
     virtual std::string user_type() = 0;
     virtual void set_player_status(std::string the_status);

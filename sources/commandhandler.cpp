@@ -89,11 +89,10 @@ void CommandHandler::fill_user_detailes(string &username, string &password, stri
         throw BadRequestException();
     }
 }
-void read_casual_match_detailes(string remaining_line, string &show_type)
+void read_match_detailes(string remaining_line, string &show_type)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
-
     string key;
     show_type = "desc";
     bool find_sort = false;
@@ -137,8 +136,14 @@ void CommandHandler::get_process(string action, string remaining_line)
     if (action == "casual_match_opponents")
     {
         string show_type;
-        read_casual_match_detailes(remaining_line, show_type);
-        game->show_cs_opponents(show_type);
+        read_match_detailes(remaining_line, show_type);
+        game->show_opponents(show_type,"casual");
+    }
+    else if (action == "ranked_match_opponents")
+    {
+        string show_type;
+        read_match_detailes(remaining_line, show_type);
+        game->show_opponents(show_type,"ranked");
     }
     else if (action == "profile")
     {
@@ -147,11 +152,11 @@ void CommandHandler::get_process(string action, string remaining_line)
         read_username(remaining_line, username, find_username);
         if (!find_username)
         {
-            game->report_profile(username, true);
+            game->report_profile(username, !find_username);
         }
         else
         {
-            game->report_profile(username, false);
+            game->report_profile(username, find_username);
         }
     }
     else if (action == "received_invitations")

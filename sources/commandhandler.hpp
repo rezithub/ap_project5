@@ -12,7 +12,6 @@ private:
     void put_process(std::string action, std::string remaining_line);
     void delete_process(std::string action, std::string remaining_line);
     void fill_invitation_detailes(std::string &username, std::string &match_type, std::string remaining_line);
-
 public:
     CommandHandler(Game &UTGame);
     void run();

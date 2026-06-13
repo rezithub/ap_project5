@@ -25,7 +25,7 @@ bool compare_by_desc_value(const pair<string, int> &a, const pair<string, int> &
 }
 void Game::add_report(std::string username, std::string reason)
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type()==ADMIN_USER)
+    if (logged_in_user == nullptr || logged_in_user->user_type() == ADMIN_USER)
     {
         throw PermissionDeniedException();
     }
@@ -156,7 +156,8 @@ bool Game::check_invitation(string intivation_id)
 }
 void Game::start_match(string id)
 {
-    if(!check_invitation(id)){
+    if (!check_invitation(id))
+    {
         throw NotFoundException();
     }
     if (logged_in_user == nullptr || logged_in_user->user_type() == ADMIN_USER)
@@ -194,7 +195,8 @@ void Game::start_match(string id)
 }
 void Game::reject_invitation(string id)
 {
-    if(!check_invitation(id)){
+    if (!check_invitation(id))
+    {
         throw NotFoundException();
     }
     if (logged_in_user == nullptr || logged_in_user->user_type() == ADMIN_USER)
@@ -221,10 +223,9 @@ void Game::reject_invitation(string id)
     logged_in_user->remove_invitation(the_invitation);
     delete the_invitation;
 }
-void show_cs(const map<string, int> &players_xp, string show_type)
+void print_opponents_detailes(const map<string, int> &opponents_detailes, string show_type, string match_type)
 {
-    vector<pair<string, int>> vector_of_pairs(players_xp.begin(), players_xp.end());
-
+    vector<pair<string, int>> vector_of_pairs(opponents_detailes.begin(), opponents_detailes.end());
     if (show_type == "asc")
     {
         sort(vector_of_pairs.begin(), vector_of_pairs.end(), compare_by_asc_value);
@@ -233,13 +234,57 @@ void show_cs(const map<string, int> &players_xp, string show_type)
     {
         sort(vector_of_pairs.begin(), vector_of_pairs.end(), compare_by_desc_value);
     }
-
     int number = 1;
+    string value_name;
+    match_type == "casual" ? value_name = "XP" : value_name = "RP";
     for (const auto &the_pair : vector_of_pairs)
     {
-        cout << number << ". " << the_pair.first << " with " << the_pair.second << " XP" << endl;
+
+        cout << number << ". " << the_pair.first << " with " << the_pair.second << " " << value_name << endl;
         number++;
     }
+}
+void Game::fill_opponents_map(User *the_opponent, map<string, int> &opponents_detailes, bool &opponent_exist, string match_type)
+{
+    if (match_type == "casual")
+    {
+        if (the_opponent->get_readiness_status())
+        {
+            opponent_exist = true;
+            opponents_detailes[the_opponent->get_username()] = the_opponent->get_xp();
+        }
+    }
+    else if (match_type == "ranked")
+    {
+        if (the_opponent->get_level() == logged_in_user->get_level())
+        {
+            opponent_exist = true;
+            opponents_detailes[the_opponent->get_username()] = the_opponent->get_rp();
+        }
+    }
+}
+void Game::show_opponents(string show_type, string match_type)
+{
+    if (logged_in_user == nullptr || logged_in_user->user_type() == ADMIN_USER)
+    {
+        throw PermissionDeniedException();
+    }
+    bool opponent_exist = false;
+    User *the_player = logged_in_user;
+    map<string, int> opponents_detailes;
+    for (auto &[user_name, the_opponent] : users)
+    {
+        if (the_opponent == the_player)
+        {
+            continue;
+        }
+        fill_opponents_map(the_opponent, opponents_detailes, opponent_exist, match_type);
+    }
+    if (!opponent_exist)
+    {
+        throw EmptyException();
+    }
+    print_opponents_detailes(opponents_detailes, show_type, match_type);
 }
 Game::Game()
 {
@@ -247,35 +292,6 @@ Game::Game()
     next_report_id = 1;
     logged_in_user = nullptr;
 }
-void Game::show_cs_opponents(string show_type)
-{
-    if (logged_in_user == nullptr || logged_in_user->user_type() == ADMIN_USER)
-    {
-        throw PermissionDeniedException();
-    }
-    User *the_player = logged_in_user;
-    map<string, int> players_xp;
-    bool opponent_exist = false;
-    for (auto &[user_name, the_opponent] : users)
-    {
-        if (the_opponent == the_player)
-        {
-            continue;
-        }
-        if (the_opponent->get_readiness_status())
-        {
-            opponent_exist = true;
-            players_xp[the_opponent->get_username()] = the_opponent->get_xp();
-        }
-    }
-
-    if (!opponent_exist)
-    {
-        throw EmptyException();
-    }
-    show_cs(players_xp, show_type);
-}
-
 void Game::load_players(const string &filepath)
 {
     ifstream file(filepath);
@@ -290,14 +306,14 @@ void Game::load_players(const string &filepath)
         if (line.empty())
             continue;
         stringstream ss(line);
-        string username, password, xp_str,rp_str;
+        string username, password, xp_str, rp_str;
         getline(ss, username, COMMA_SEPERATOR);
         getline(ss, password, COMMA_SEPERATOR);
         getline(ss, xp_str, COMMA_SEPERATOR);
         getline(ss, rp_str, COMMA_SEPERATOR);
         int xp = stoi(xp_str);
         int rp = stoi(rp_str);
-        users[username] = new Player(username, password, xp,rp);
+        users[username] = new Player(username, password, xp, rp);
     }
     file.close();
 }
@@ -353,7 +369,7 @@ void Game::register_user(string username, string password)
     {
         throw BadRequestException();
     }
-    Player *the_player = new Player(username, password, INITIAL_XP,INITIAL_RP);
+    Player *the_player = new Player(username, password, INITIAL_XP, INITIAL_RP);
     users[username] = the_player;
     logged_in_user = the_player;
 }

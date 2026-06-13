@@ -25,6 +25,7 @@ private:
     int next_report_id;
     User *logged_in_user;
     void remove_match(CasualMatch *the_match);
+    void Game::fill_opponents_map(User *the_opponent, map<string, int> &opponents_detailes, bool &opponent_exist, string match_type);
 
 public:
     ~Game();
@@ -35,7 +36,7 @@ public:
     void start_match(std::string id);
     void reject_invitation(std::string id);
     void change_status(std::string user_status);
-    void show_cs_opponents(std::string show_type);
+    void show_opponents(std::string show_type, std::string match_type);
     void post_inviation(std::string opponent_username, std::string match_type);
     void do_action(std::string action);
     void show_match_status();

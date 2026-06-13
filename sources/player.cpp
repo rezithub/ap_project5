@@ -2,14 +2,30 @@
 #include <algorithm>
 #include <iostream>
 using namespace std;
-Player::Player(string _username, string _password, int _xp,int _rp) : User(_username, _password)
+Player::Player(string _username, string _password, int _xp, int _rp) : User(_username, _password)
 {
     total_loses = 0;
     total_wins = 0;
     xp = _xp;
-    rp=_rp;
+    rp = _rp;
     player_status = NOT_IN_GAME_STATUS;
     is_ready_cs_match = false;
+    if (rp < 1400)
+    {
+        level = BORONZE_LEVEL;
+    }
+    else if (rp >= 1400 && rp < 1750)
+    {
+        level = SILVER_LEVEL;
+    }
+    else if (rp >= 1750 && rp < 2250)
+    {
+        level = GOLD_LEVEL;
+    }
+    else
+    {
+        level = PLATINUM_LEVEL;
+    }
 }
 void Player::set_readiness_status(string the_status)
 {
@@ -22,6 +38,13 @@ bool Player::get_readiness_status()
 string Player::get_player_status()
 {
     return player_status;
+}
+string Player::get_level()
+{
+    return level;
+}
+int Player::get_rp(){
+    return rp;
 }
 void Player::set_player_status(string the_status)
 {
