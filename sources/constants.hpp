@@ -11,6 +11,7 @@ const std::string RELOAD_ACTION = "reload";
 const std::string PENDING_STATUS = "pending";
 const std::string DEFEND_ACTION = "defend";
 const int INITIAL_XP = 500;
+const int INITIAL_RP = 1200;
 const char COMMA_SEPERATOR = ',';
 const char QUOTE_SEPERATOR = '"';
 #endif

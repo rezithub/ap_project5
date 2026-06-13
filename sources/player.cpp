@@ -2,11 +2,12 @@
 #include <algorithm>
 #include <iostream>
 using namespace std;
-Player::Player(string _username, string _password, int _xp) : User(_username, _password)
+Player::Player(string _username, string _password, int _xp,int _rp) : User(_username, _password)
 {
     total_loses = 0;
     total_wins = 0;
     xp = _xp;
+    rp=_rp;
     player_status = NOT_IN_GAME_STATUS;
     is_ready_cs_match = false;
 }

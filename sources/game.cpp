@@ -290,12 +290,14 @@ void Game::load_players(const string &filepath)
         if (line.empty())
             continue;
         stringstream ss(line);
-        string username, password, xp_str;
+        string username, password, xp_str,rp_str;
         getline(ss, username, COMMA_SEPERATOR);
         getline(ss, password, COMMA_SEPERATOR);
         getline(ss, xp_str, COMMA_SEPERATOR);
+        getline(ss, rp_str, COMMA_SEPERATOR);
         int xp = stoi(xp_str);
-        users[username] = new Player(username, password, xp);
+        int rp = stoi(rp_str);
+        users[username] = new Player(username, password, xp,rp);
     }
     file.close();
 }
@@ -351,7 +353,7 @@ void Game::register_user(string username, string password)
     {
         throw BadRequestException();
     }
-    Player *the_player = new Player(username, password, INITIAL_XP);
+    Player *the_player = new Player(username, password, INITIAL_XP,INITIAL_RP);
     users[username] = the_player;
     logged_in_user = the_player;
 }

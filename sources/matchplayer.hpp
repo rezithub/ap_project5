@@ -11,7 +11,6 @@ private:
     int bullets;
     std::string current_action;
     std::vector<std::string> move_history;
-
 public:
     MatchPlayerState(User *p)
     {

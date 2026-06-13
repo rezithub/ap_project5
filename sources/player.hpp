@@ -11,6 +11,7 @@ class Player : public User
 {
 private:
     int xp;
+    int rp;
     int total_wins;
     int total_loses;
     bool is_ready_cs_match;
@@ -18,7 +19,7 @@ private:
     std::vector<Invitation *> received_invitations;
 
 public:
-    Player(std::string _username, std::string _password, int _xp);
+    Player(std::string _username, std::string _password, int _xp,int _rp);
     void set_readiness_status(std::string the_status) override;
     void set_player_status(std::string the_status) override;
     bool get_readiness_status() override;
