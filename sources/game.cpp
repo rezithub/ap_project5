@@ -246,8 +246,14 @@ void Game::penalty(int report_id,std::string penalty_type,int amount,int number_
     if(reports.count(report_id)==0){
         throw NotFoundException();
     }
-
     Report *the_report = reports.at(report_id);
+    User* penalized_player=users.at(the_report->get_reciever());
+    if(penalty_type=="health_penalty"){
+        penalized_player->health_penalty(amount,number_of_matches);
+    }
+    else if(penalty_type=="bullet_penalty"){
+        penalized_player->bullet_penalty(amount,number_of_matches);
+    }
     reports.erase(report_id);
     delete the_report;
 }

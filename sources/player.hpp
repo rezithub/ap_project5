@@ -25,8 +25,8 @@ private:
     std::string player_status;
     std::vector<Invitation *> received_invitations;
     std::set<User *> blocked_users;
-    Penalty health_penalty;
-    Penalty bullet_penalty;
+    Penalty health_penalties;
+    Penalty bullet_penalties;
 
 public:
     Player(std::string _username, std::string _password, int _xp, int _rp);
@@ -51,6 +51,8 @@ public:
     int get_health_penalty_amount() override;
     int get_bullet_penalty_amount() override;
     void consume_penalties() override;
+    void health_penalty(int amount, int number_of_matches) override;
+    void bullet_penalty(int amount, int number_of_matches) override;
 };
 
 #endif

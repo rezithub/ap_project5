@@ -13,17 +13,17 @@ Player::Player(string _username, string _password, int _xp, int _rp) : User(_use
 }
 int Player::get_health_penalty_amount()
 {
-    return (health_penalty.remaining_matches > 0) ? health_penalty.amount : 0;
+    return (health_penalties.remaining_matches > 0) ? health_penalties.amount : 0;
 }
 void Player::consume_penalties()
 {
-    if (health_penalty.remaining_matches > 0)
+    if (health_penalties.remaining_matches > 0)
     {
-        health_penalty.remaining_matches--;
+        health_penalties.remaining_matches--;
     }
-    if (bullet_penalty.remaining_matches > 0)
+    if (bullet_penalties.remaining_matches > 0)
     {
-        bullet_penalty.remaining_matches--;
+        bullet_penalties.remaining_matches--;
     }
 }
 void Player::set_rp(int new_rp)
@@ -32,7 +32,7 @@ void Player::set_rp(int new_rp)
 }
 int Player::get_bullet_penalty_amount()
 {
-    return (bullet_penalty.remaining_matches > 0) ? bullet_penalty.amount : 0;
+    return (bullet_penalties.remaining_matches > 0) ? bullet_penalties.amount : 0;
 }
 void Player::set_readiness_status(string the_status)
 {
@@ -148,4 +148,14 @@ void Player::block(User *the_user, string status)
     {
         blocked_users.erase(the_user);
     }
+}
+void Player::health_penalty(int amount, int number_of_matches)
+{
+    health_penalties.amount = amount;
+    health_penalties.remaining_matches = number_of_matches;
+}
+void Player::bullet_penalty(int amount, int number_of_matches)
+{
+    bullet_penalties.amount = amount;
+    bullet_penalties.remaining_matches = number_of_matches;
 }

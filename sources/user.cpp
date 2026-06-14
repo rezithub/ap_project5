@@ -16,6 +16,14 @@ string User::get_username()
 {
     return username;
 }
+void User::bullet_penalty(int amount, int number_of_matches)
+{
+    throw PermissionDeniedException();
+}
+void User::health_penalty(int amount, int number_of_matches)
+{
+    throw PermissionDeniedException();
+}
 string User::get_player_status()
 {
     throw PermissionDeniedException();

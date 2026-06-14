@@ -14,3 +14,7 @@ void Report::print_detailes()
     " reported " << '"' << reciever_username << '"'   
     << " for: " << '"' << reason << '"' << endl;
 }
+string Report::get_reciever()
+{
+    return reciever_username;
+}
