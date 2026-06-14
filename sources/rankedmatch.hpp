@@ -1,6 +1,7 @@
 #ifndef _RANKEDMATCH_HPP
 #define _RANKEDMATCH_HPP
 #include "match.hpp"
+#include "constants.hpp"
 
 class rankedmatch : public match
 {

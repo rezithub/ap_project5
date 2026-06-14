@@ -23,7 +23,7 @@ User *MatchPlayerState::get_player()
 {
     return player;
 }
-int MatchPlayerState::get_bullets()
+int MatchPlayerState::get_health()
 {
     return health;
 }

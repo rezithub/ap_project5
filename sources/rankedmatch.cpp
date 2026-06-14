@@ -35,9 +35,13 @@ int calculate_delta_rp(string level)
     {
         throw BadRequestException();
     }
+    return delta_rp;
 }
 void rankedmatch::end_game_actions(User *winner, User *loser, int winner_health)
 {
+    winner->set_player_status(NOT_IN_GAME_STATUS);
+    loser->set_player_status(NOT_IN_GAME_STATUS);
+    is_match_finished=true;
     string players_level = winner->get_level();
     int delta_rp = calculate_delta_rp(players_level);
     int winner_new_rp = winner->get_rp() + delta_rp + (winner_health * 25);

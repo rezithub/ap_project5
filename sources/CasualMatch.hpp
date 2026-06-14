@@ -1,8 +1,6 @@
 #ifndef _CASUALMATCH_HPP
 #define _CASUALMATCH_HPP
 #include "match.hpp"
-
-#include "exceptions.hpp"
 #include "constants.hpp"
 
 class CasualMatch : public match
