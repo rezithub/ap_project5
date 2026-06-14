@@ -14,13 +14,7 @@ private:
     std::vector<std::string> move_history;
 
 public:
-    MatchPlayerState(User *_player, int init_health, int init_bullets)
-    {
-        player = _player;
-        bullets = init_bullets;
-        health = init_health;
-        current_action = PENDING_STATUS;
-    }
+    MatchPlayerState(User *_player, int init_health, int init_bullets);
     std::string get_current_action();
     int get_bullets();
     void set_action(std::string action);

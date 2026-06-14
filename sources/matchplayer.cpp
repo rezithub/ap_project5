@@ -1,5 +1,12 @@
 #include "matchplayer.hpp"
 using namespace std;
+MatchPlayerState::MatchPlayerState(User *_player, int init_health, int init_bullets)
+{
+    player = _player;
+    bullets = init_bullets;
+    health = init_health;
+    current_action = PENDING_STATUS;
+}
 string MatchPlayerState::get_current_action()
 {
     return current_action;
