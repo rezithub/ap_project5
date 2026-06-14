@@ -203,7 +203,7 @@ void read_casual_match_readiness(string remaining_line, string &is_ready)
         throw BadRequestException();
     }
 }
-void read_id(string remaining_line, string expected_key, string& id)
+void read_id(string remaining_line, string expected_key, string &id)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
@@ -297,7 +297,8 @@ void fill_block_detailes(string remaining_line, string &username, string &status
         else if (key == "status")
         {
             status = value;
-            if(status!="blocked"&&status!="unblocked"){
+            if (status != "blocked" && status != "unblocked")
+            {
                 throw BadRequestException();
             }
             find_status = true;
@@ -344,7 +345,7 @@ void CommandHandler::post_process(string action, string remaining_line)
         string opponent_username;
         string match_type;
         fill_invitation_detailes(opponent_username, match_type, remaining_line);
-        if (match_type != "casual" && match_type != "ranked")
+        if (match_type != CASUAL_MATCH && match_type != RANKED_MATCH)
         {
             throw BadRequestException();
         }
@@ -354,14 +355,14 @@ void CommandHandler::post_process(string action, string remaining_line)
     else if (action == "start_match")
     {
         string invitation_id;
-        read_id(remaining_line, "invitation_id" ,invitation_id);
+        read_id(remaining_line, "invitation_id", invitation_id);
         game->start_match(invitation_id);
         cout << "OK" << endl;
     }
     else if (action == "reject_invitation")
     {
         string invitation_id;
-        read_id(remaining_line, "invitation_id" ,invitation_id);
+        read_id(remaining_line, "invitation_id", invitation_id);
         game->reject_invitation(invitation_id);
         cout << "OK" << endl;
     }
@@ -383,7 +384,7 @@ void CommandHandler::post_process(string action, string remaining_line)
     else if (action == "dismiss_report")
     {
         string report_id;
-        read_id(remaining_line, "report_id" ,report_id);
+        read_id(remaining_line, "report_id", report_id);
         game->dismiss_report(report_id);
         cout << "OK" << endl;
     }
@@ -391,8 +392,8 @@ void CommandHandler::post_process(string action, string remaining_line)
     {
         string username;
         string status;
-        fill_block_detailes(remaining_line,username,status);
-        game->block_user(username,status);
+        fill_block_detailes(remaining_line, username, status);
+        game->block_user(username, status);
         cout << "OK" << endl;
     }
     else

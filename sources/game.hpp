@@ -13,18 +13,19 @@
 #include "report.hpp"
 #include "exceptions.hpp"
 #include "constants.hpp"
-
+#include "match.hpp"
+#include "rankedmatch.hpp"
 class Game
 {
 private:
     std::map<std::string, User *> users;
-    std::map<int,Report *> reports;
+    std::map<int, Report *> reports;
     std::map<int, Invitation *> invitations;
-    std::map<std::string, CasualMatch *> users_matches;
+    std::map<std::string, match *> users_matches;
     int next_invitation_id;
     int next_report_id;
     User *logged_in_user;
-    void remove_match(CasualMatch *the_match);
+    void remove_match(match *the_match);
     void Game::fill_opponents_map(User *the_opponent, map<string, int> &opponents_detailes, bool &opponent_exist, string match_type);
 
 public:
@@ -41,7 +42,7 @@ public:
     void do_action(std::string action);
     void show_match_status();
     void dismiss_report(std::string report_id);
-    void block_user(std::string username,std::string status);
+    void block_user(std::string username, std::string status);
     void load_players(const std::string &filepath);
     void load_admins(const std::string &filepath);
     void add_report(std::string username, std::string reason);

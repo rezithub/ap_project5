@@ -60,7 +60,7 @@ void Game::show_reports()
         the_report->print_detailes();
     }
 }
-void Game::remove_match(CasualMatch *the_match)
+void Game::remove_match(match *the_match)
 {
     for (auto it = users_matches.begin(); it != users_matches.end();)
     {
@@ -90,7 +90,7 @@ void Game::do_action(string action)
     {
         throw NotFoundException();
     }
-    CasualMatch *the_match = it->second;
+    match *the_match = it->second;
     the_match->register_action(logged_in_user, action);
     if (the_match->get_match_status())
     {
@@ -133,7 +133,7 @@ void Game::show_match_status()
     {
         throw NotFoundException();
     }
-    CasualMatch *the_match = it->second;
+    match *the_match = it->second;
     the_match->print_status(logged_in_user);
 }
 void Game::dismiss_report(string report_id)
@@ -159,18 +159,22 @@ void Game::dismiss_report(string report_id)
     reports.erase(id);
     delete the_report;
 }
-void Game::block_user(string username,string status){
-    if(logged_in_user==nullptr||logged_in_user->user_type()==ADMIN_USER){
+void Game::block_user(string username, string status)
+{
+    if (logged_in_user == nullptr || logged_in_user->user_type() == ADMIN_USER)
+    {
         throw PermissionDeniedException();
     }
-    if(users.count(username)==0){
+    if (users.count(username) == 0)
+    {
         throw NotFoundException();
     }
-    User *the_user=users.at(username);
-    if(the_user->user_type()==ADMIN_USER){
+    User *the_user = users.at(username);
+    if (the_user->user_type() == ADMIN_USER)
+    {
         throw BadRequestException();
     }
-    logged_in_user->block(the_user,status);
+    logged_in_user->block(the_user, status);
 }
 bool Game::check_invitation(string intivation_id)
 {
@@ -222,7 +226,15 @@ void Game::start_match(string id)
     }
     player1->set_player_status(IN_GAME_STATUS);
     player2->set_player_status(IN_GAME_STATUS);
-    CasualMatch *the_match = new CasualMatch(player1, player2);
+    match *the_match;
+    if (the_invitation->get_match_type() == CASUAL_MATCH)
+    {
+        the_match = new CasualMatch(player1, player2);
+    }
+    else if (the_invitation->get_match_type() == RANKED_MATCH)
+    {
+        the_match = new rankedmatch(player1, player2);
+    }
     users_matches[player2->get_username()] = the_match;
     users_matches[player1->get_username()] = the_match;
     invitations.erase(invite_id);
@@ -432,13 +444,13 @@ Game::~Game()
     {
         delete it->second;
     }
-    set<CasualMatch *> unique_matches;
+    set<match *> unique_matches;
     for (auto it = users_matches.begin(); it != users_matches.end(); it++)
     {
         unique_matches.insert(it->second);
     }
 
-    for (CasualMatch *the_match : unique_matches)
+    for (match *the_match : unique_matches)
     {
         delete the_match;
     }

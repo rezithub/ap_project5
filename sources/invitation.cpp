@@ -10,7 +10,8 @@ User *Invitation::get_origin_user()
 {
     return origin_player;
 }
-string Invitation::get_match_type(){
+string Invitation::get_match_type()
+{
     return match_type;
 }
 User *Invitation::get_destination_user()

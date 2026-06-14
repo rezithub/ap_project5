@@ -26,8 +26,9 @@ void Player::consume_penalties()
         bullet_penalty.remaining_matches--;
     }
 }
-void Player::set_rp(int new_rp){
-    rp=new_rp;
+void Player::set_rp(int new_rp)
+{
+    rp = new_rp;
 }
 int Player::get_bullet_penalty_amount()
 {

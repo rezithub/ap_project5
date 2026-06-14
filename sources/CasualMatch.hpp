@@ -8,9 +8,10 @@
 class CasualMatch : public match
 {
 private:
-    void end_game_actions(User *winner, User *loser,int winner_health) override;
+    void end_game_actions(User *winner, User *loser, int winner_health) override;
+
 public:
     CasualMatch(User *player1, User *player2);
-    void print_rank_status(int bullets,int health) override {};
+    void print_rank_status(int bullets, int health) override {};
 };
 #endif

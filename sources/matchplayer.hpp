@@ -12,12 +12,13 @@ private:
     int health;
     std::string current_action;
     std::vector<std::string> move_history;
+
 public:
-    MatchPlayerState(User *p,int init_health,int init_bullets)
+    MatchPlayerState(User *_player, int init_health, int init_bullets)
     {
-        player = p;
+        player = _player;
         bullets = init_bullets;
-        health=init_health;
+        health = init_health;
         current_action = PENDING_STATUS;
     }
     std::string get_current_action();

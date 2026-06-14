@@ -73,18 +73,23 @@ void User::print_detailes()
 {
     throw PermissionDeniedException();
 }
-void User::block(User* the_user,string status){
+void User::block(User *the_user, string status)
+{
     throw PermissionDeniedException();
 }
-int User::get_health_penalty_amount(){
+int User::get_health_penalty_amount()
+{
     throw PermissionDeniedException();
 }
-int User::get_bullet_penalty_amount(){
+int User::get_bullet_penalty_amount()
+{
     throw PermissionDeniedException();
 }
-void User::consume_penalties(){
+void User::consume_penalties()
+{
     throw PermissionDeniedException();
 }
-void User::set_rp(int newrp){
+void User::set_rp(int newrp)
+{
     throw PermissionDeniedException();
 }

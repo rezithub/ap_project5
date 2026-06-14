@@ -17,7 +17,7 @@ public:
     std::string get_password();
     std::string get_username();
     virtual int get_xp();
-    virtual void block(User* the_user,std::string status);
+    virtual void block(User *the_user, std::string status);
     virtual bool check_block(User *the_user);
     virtual int get_rp();
     virtual void set_xp(int newxp);

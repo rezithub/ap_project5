@@ -16,14 +16,16 @@ User *MatchPlayerState::get_player()
 {
     return player;
 }
-int MatchPlayerState::get_bullets(){
+int MatchPlayerState::get_bullets()
+{
     return health;
 }
 void MatchPlayerState::shoot_bullet()
 {
     bullets -= 1;
 }
-void MatchPlayerState::decrease_health(){
+void MatchPlayerState::decrease_health()
+{
     health--;
 }
 void MatchPlayerState::reload_bullet()

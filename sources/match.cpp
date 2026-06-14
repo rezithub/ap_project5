@@ -2,13 +2,13 @@
 #include <iostream>
 #include <iomanip>
 using namespace std;
-MatchPlayerState &match::get_my_state(User *p)
+MatchPlayerState &match::get_my_state(User *player)
 {
-    if (player1_state.get_player() == p)
+    if (player1_state.get_player() == player)
     {
         return player1_state;
     }
-    else if (player2_state.get_player() == p)
+    else if (player2_state.get_player() == player)
     {
         return player2_state;
     }
@@ -17,13 +17,13 @@ MatchPlayerState &match::get_my_state(User *p)
         throw PermissionDeniedException();
     }
 }
-MatchPlayerState &match::get_opponent_state(User *p)
+MatchPlayerState &match::get_opponent_state(User *player)
 {
-    if (player1_state.get_player() == p)
+    if (player1_state.get_player() == player)
     {
         return player2_state;
     }
-    else if (player2_state.get_player() == p)
+    else if (player2_state.get_player() == player)
     {
         return player1_state;
     }
@@ -36,9 +36,9 @@ bool match::get_match_status()
 {
     return is_match_finished;
 }
-void match::register_action(User *p, string action)
+void match::register_action(User *player, string action)
 {
-    MatchPlayerState &my_state = get_my_state(p);
+    MatchPlayerState &my_state = get_my_state(player);
     if (my_state.get_current_action() != PENDING_STATUS)
     {
         throw PermissionDeniedException();
@@ -50,9 +50,9 @@ void match::register_action(User *p, string action)
     my_state.set_action(action);
     resolve_turn();
 }
-void match::do_action(User *p, string action)
+void match::do_action(User *player, string action)
 {
-    MatchPlayerState &my_state = get_my_state(p);
+    MatchPlayerState &my_state = get_my_state(player);
     if (action == SHOOT_ACTION)
     {
         my_state.shoot_bullet();
@@ -95,7 +95,7 @@ void match::print_status(User *player)
         cout << "Your opponent: played" << endl;
     }
     print_history(the_player, the_opponent);
-    print_rank_status(the_player.get_bullets(),the_player.get_health());
+    print_rank_status(the_player.get_bullets(), the_player.get_health());
 }
 
 void match::resolve_turn()
@@ -116,16 +116,17 @@ void match::resolve_turn()
     if (player1_action == SHOOT_ACTION && player2_action == RELOAD_ACTION)
     {
         player2_state.decrease_health();
-        if(player2_state.get_health()==0){
-            end_game_actions(player1, player2,player1_state.get_health());
+        if (player2_state.get_health() == 0)
+        {
+            end_game_actions(player1, player2, player1_state.get_health());
         }
-
     }
     else if (player2_action == SHOOT_ACTION && player1_action == RELOAD_ACTION)
     {
         player1_state.decrease_health();
-        if(player1_state.get_health()==0){
-            end_game_actions(player2, player1,player2_state.get_health());
+        if (player1_state.get_health() == 0)
+        {
+            end_game_actions(player2, player1, player2_state.get_health());
         }
     }
     else
