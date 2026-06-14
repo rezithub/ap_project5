@@ -15,3 +15,7 @@ const char *EmptyException::what() const noexcept
 {
     return "Empty";
 }
+const char *LevelMisMatch::what() const noexcept
+{
+    return "Level Mismatch";
+} 

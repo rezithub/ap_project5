@@ -233,6 +233,10 @@ void Game::start_match(string id)
     }
     else if (the_invitation->get_match_type() == RANKED_MATCH)
     {
+        if (player1->get_level() != player2->get_level())
+        {
+            throw LevelMisMatch();
+        }
         the_match = new rankedmatch(player1, player2);
     }
     users_matches[player2->get_username()] = the_match;

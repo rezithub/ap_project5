@@ -27,4 +27,10 @@ public:
     const char *what() const noexcept;
 };
 
+class LevelMisMatch : public std::exception
+{
+public:
+    const char *what() const noexcept;
+};
+
 #endif
