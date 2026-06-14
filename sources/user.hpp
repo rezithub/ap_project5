@@ -33,5 +33,8 @@ public:
     virtual void show_received_invitations();
     virtual void win_match();
     virtual void lose_match();
+    virtual int get_health_penalty_amount();
+    virtual int get_bullet_penalty_amount();
+    virtual void consume_penalties();
 };
 #endif

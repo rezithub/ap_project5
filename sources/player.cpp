@@ -11,6 +11,25 @@ Player::Player(string _username, string _password, int _xp, int _rp) : User(_use
     player_status = NOT_IN_GAME_STATUS;
     is_ready_cs_match = false;
 }
+int Player::get_health_penalty_amount()
+{
+    return (health_penalty.remaining_matches > 0) ? health_penalty.amount : 0;
+}
+void Player::consume_penalties()
+{
+    if (health_penalty.remaining_matches > 0)
+    {
+        health_penalty.remaining_matches--;
+    }
+    if (bullet_penalty.remaining_matches > 0)
+    {
+        bullet_penalty.remaining_matches--;
+    }
+}
+int Player::get_bullet_penalty_amount()
+{
+    return (bullet_penalty.remaining_matches > 0) ? bullet_penalty.amount : 0;
+}
 void Player::set_readiness_status(string the_status)
 {
     this->is_ready_cs_match = (the_status == "true");
@@ -44,12 +63,16 @@ string Player::get_level()
     }
     return level;
 }
-int Player::get_rp(){
+int Player::get_rp()
+{
     return rp;
 }
-bool Player::check_block(User* the_opponent){
-    for(auto the_user : blocked_users){
-        if(the_user==the_opponent){
+bool Player::check_block(User *the_opponent)
+{
+    for (auto the_user : blocked_users)
+    {
+        if (the_user == the_opponent)
+        {
             return true;
         }
     }
@@ -111,11 +134,14 @@ void Player::print_detailes()
          << "Total wins: " << total_wins << endl
          << "Total losses: " << total_loses << endl;
 }
-void Player::block(User* the_user,string status){
-    if(status==BLOCKED_STATUS){
+void Player::block(User *the_user, string status)
+{
+    if (status == BLOCKED_STATUS)
+    {
         blocked_users.insert(the_user);
     }
-    else if(status==UNBLOCKED_STATUS){
+    else if (status == UNBLOCKED_STATUS)
+    {
         blocked_users.erase(the_user);
     }
 }

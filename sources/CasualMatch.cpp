@@ -5,41 +5,8 @@
 #include <algorithm>
 using namespace std;
 
-CasualMatch::CasualMatch(User *p1, User *p2) : player1_state(p1,FIRST_CS_HEALTH,FIRST_CS_BULLET), player2_state(p2,FIRST_CS_HEALTH,FIRST_CS_BULLET)
-{
-    current_turn = 1;
-    is_match_finished = false;
-}
-void CasualMatch::do_action(User *p, string action)
-{
-    MatchPlayerState &my_state = get_my_state(p);
-    if (action == SHOOT_ACTION)
-    {
-        my_state.shoot_bullet();
-    }
-    else if (action == RELOAD_ACTION)
-    {
-        my_state.reload_bullet();
-    }
-}
-void CasualMatch::register_action(User *p, string action)
-{
-    MatchPlayerState &my_state = get_my_state(p);
-    if (my_state.get_current_action() != PENDING_STATUS)
-    {
-        throw PermissionDeniedException();
-    }
-    if (action == SHOOT_ACTION && my_state.get_bullets() == 0)
-    {
-        throw BadRequestException();
-    }
-    my_state.set_action(action);
-    resolve_turn();
-}
-bool CasualMatch::is_finished()
-{
-    return is_match_finished;
-}
+CasualMatch::CasualMatch(User *p1, User *p2) 
+    : match(p1, p2, FIRST_CS_HEALTH, FIRST_CS_BULLET, FIRST_CS_HEALTH, FIRST_CS_BULLET){}
 void CasualMatch::end_game_actions(User *winner, User *loser)
 {
     int winner_xp = winner->get_xp();
@@ -118,34 +85,4 @@ void CasualMatch::print_status(User *player)
         cout << "Your opponent: played" << endl;
     }
     print_history(the_player, the_opponent);
-}
-MatchPlayerState &CasualMatch::get_my_state(User *p)
-{
-    if (player1_state.get_player() == p)
-    {
-        return player1_state;
-    }
-    else if (player2_state.get_player() == p)
-    {
-        return player2_state;
-    }
-    else
-    {
-        throw PermissionDeniedException();
-    }
-}
-MatchPlayerState &CasualMatch::get_opponent_state(User *p)
-{
-    if (player1_state.get_player() == p)
-    {
-        return player2_state;
-    }
-    else if (player2_state.get_player() == p)
-    {
-        return player1_state;
-    }
-    else
-    {
-        throw PermissionDeniedException();
-    }
 }

@@ -76,3 +76,12 @@ void User::print_detailes()
 void User::block(User* the_user,string status){
     throw PermissionDeniedException();
 }
+int User::get_health_penalty_amount(){
+    throw PermissionDeniedException();
+}
+int User::get_bullet_penalty_amount(){
+    throw PermissionDeniedException();
+}
+void User::consume_penalties(){
+    throw PermissionDeniedException();
+}
