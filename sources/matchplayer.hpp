@@ -9,13 +9,15 @@ class MatchPlayerState
 private:
     User *player;
     int bullets;
+    int health;
     std::string current_action;
     std::vector<std::string> move_history;
 public:
-    MatchPlayerState(User *p)
+    MatchPlayerState(User *p,int init_health,int init_bullets)
     {
         player = p;
-        bullets = 1;
+        bullets = init_bullets;
+        health=init_health;
         current_action = PENDING_STATUS;
     }
     std::string get_current_action();

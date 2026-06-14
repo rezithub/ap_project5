@@ -5,7 +5,7 @@
 #include <algorithm>
 using namespace std;
 
-CasualMatch::CasualMatch(User *p1, User *p2) : player1_state(p1), player2_state(p2)
+CasualMatch::CasualMatch(User *p1, User *p2) : player1_state(p1,FIRST_CS_HEALTH,FIRST_CS_BULLET), player2_state(p2,FIRST_CS_HEALTH,FIRST_CS_BULLET)
 {
     current_turn = 1;
     is_match_finished = false;
