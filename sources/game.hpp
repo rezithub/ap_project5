@@ -40,6 +40,7 @@ public:
     void show_opponents(std::string show_type, std::string match_type);
     void post_inviation(std::string opponent_username, std::string match_type);
     void do_action(std::string action);
+    void penalty(int report_id,std::string penalty_type,int amount,int number_of_matches);
     void show_match_status();
     void dismiss_report(std::string report_id);
     void block_user(std::string username, std::string status);

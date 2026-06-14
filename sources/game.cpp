@@ -245,6 +245,9 @@ void Game::start_match(string id)
     player1->remove_invitation(the_invitation);
     delete the_invitation;
 }
+void Game::penalty(int report_id,std::string penalty_type,int amount,int number_of_matches){
+
+}
 void Game::reject_invitation(string id)
 {
     if (!check_invitation(id))

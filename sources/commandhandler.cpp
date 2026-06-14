@@ -27,7 +27,7 @@ CommandHandler::CommandHandler(Game &UTGame)
 {
     game = &UTGame;
 }
-void CommandHandler::fill_invitation_detailes(string &username, string &match_type, string remaining_line)
+void fill_invitation_detailes(string &username, string &match_type, string remaining_line)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
@@ -62,7 +62,7 @@ void CommandHandler::fill_invitation_detailes(string &username, string &match_ty
         throw BadRequestException();
     }
 }
-void CommandHandler::fill_user_detailes(string &username, string &password, string remaining_line)
+void fill_user_detailes(string &username, string &password, string remaining_line)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
@@ -309,6 +309,40 @@ void fill_block_detailes(string remaining_line, string &username, string &status
         throw BadRequestException();
     }
 }
+void fill_penalty_detailes(string remainin_line, int &report_id, string &penalty_type, int &amount, int &number_of_matches)
+{
+    stringstream ss(remainin_line);
+    read_question_symbole(ss);
+    string key;
+    bool find_id=false,find_type=false,find_amount=false,find_number=false;
+    while (ss >> key)
+    {
+        read_quote_symbole(ss);
+        string value;
+        getline(ss,value,QUOTE_SEPERATOR);
+        if(key=="report_id"){
+            int id=stoi(value);
+            report_id=id;
+        }
+        else if(key=="type"){
+            penalty_type=value;
+        }
+        else if(key=="amount"){
+            int penalty_amount=stoi(value);
+            amount=penalty_amount;
+        }
+        else if(key=="number_of_matches"){
+            int number=stoi(value);
+            number_of_matches=number;
+            if(number_of_matches<1){
+                throw BadRequestException();
+            }
+        }
+    }
+    if(!find_id || !find_type || !find_amount || !find_number){
+        throw BadRequestException();
+    }
+}
 void CommandHandler::post_process(string action, string remaining_line)
 {
 
@@ -395,6 +429,26 @@ void CommandHandler::post_process(string action, string remaining_line)
         fill_block_detailes(remaining_line, username, status);
         game->block_user(username, status);
         cout << "OK" << endl;
+    }
+    else if (action == "penalty")
+    {
+        int report_id, amount, number_of_matches;
+        string penalty_type;
+        fill_penalty_detailes(remaining_line,report_id,penalty_type,amount,number_of_matches);
+        if(penalty_type=="health_penalty"){
+            if(amount<1 || amount >2){
+                throw BadRequestException();
+            }
+        }
+        else if(penalty_type=="bullet_penalty"){
+            if(amount<1 || amount >3){
+                throw BadRequestException();
+            }
+        }
+        else{
+            throw BadRequestException();
+        }
+        game->penalty(report_id,penalty_type,amount,number_of_matches);
     }
     else
     {
