@@ -38,6 +38,7 @@ public:
     bool check_block(User *the_opponent) override;
     std::string get_level() override;
     void set_xp(int newxp) override;
+    void set_rp(int newrp) override;
     void add_invitation(Invitation *the_invitation) override;
     void remove_invitation(Invitation *the_invitation) override;
     std::string user_type() override;

@@ -20,6 +20,8 @@ const int INITIAL_XP = 500;
 const int INITIAL_RP = 1200;
 const char COMMA_SEPERATOR = ',';
 const char QUOTE_SEPERATOR = '"';
-const int FIRST_CS_BULLET=1;
-const int FIRST_CS_HEALTH=1;
+const int INTIAL_CS_BULLET=1;
+const int INTIAL_CS_HEALTH=1;
+const int INTIAL_RN_BULLET=3;
+const int INTIAL_RN_HEALTH=3;
 #endif

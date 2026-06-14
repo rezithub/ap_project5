@@ -25,6 +25,8 @@ public:
     void set_action(std::string action);
     void shoot_bullet();
     void reload_bullet();
+    void decrease_health();
+    int get_health();
     User *get_player();
     void update_history();
     std::vector<std::string> get_history();

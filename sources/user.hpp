@@ -21,6 +21,7 @@ public:
     virtual bool check_block(User *the_user);
     virtual int get_rp();
     virtual void set_xp(int newxp);
+    virtual void set_rp(int newrp);
     virtual bool get_readiness_status() = 0;
     virtual void set_readiness_status(std::string the_status);
     virtual std::string get_player_status();

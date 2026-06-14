@@ -92,7 +92,7 @@ void Game::do_action(string action)
     }
     CasualMatch *the_match = it->second;
     the_match->register_action(logged_in_user, action);
-    if (the_match->is_finished())
+    if (the_match->get_match_status())
     {
         remove_match(the_match);
     }

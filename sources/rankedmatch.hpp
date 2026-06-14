@@ -5,11 +5,10 @@
 class rankedmatch : public match
 {
 private:
-    void resolve_turn() override;
-    void end_game_actions(User *winner, User *loser) override;
+    void end_game_actions(User *winner, User *loser,int winner_health) override;
 public:
     rankedmatch(User* p1,User* p2);
-    void print_status(User *player) override;
+    void print_rank_status(int bullets,int health) override;
 };
 
 

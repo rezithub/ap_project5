@@ -85,3 +85,6 @@ int User::get_bullet_penalty_amount(){
 void User::consume_penalties(){
     throw PermissionDeniedException();
 }
+void User::set_rp(int newrp){
+    throw PermissionDeniedException();
+}
