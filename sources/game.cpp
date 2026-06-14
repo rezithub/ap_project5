@@ -142,15 +142,7 @@ void Game::dismiss_report(string report_id)
     {
         throw PermissionDeniedException();
     }
-    int id;
-    try
-    {
-        id = stoi(report_id);
-    }
-    catch (const exception &e)
-    {
-        throw BadRequestException();
-    }
+    int id=stoi(report_id);
     if (reports.count(id) == 0)
     {
         throw NotFoundException();
@@ -245,8 +237,19 @@ void Game::start_match(string id)
     player1->remove_invitation(the_invitation);
     delete the_invitation;
 }
-void Game::penalty(int report_id,std::string penalty_type,int amount,int number_of_matches){
+void Game::penalty(int report_id,std::string penalty_type,int amount,int number_of_matches)
+{
+    if (logged_in_user == NULL || logged_in_user->user_type() == PLAYER_USER)
+    {
+        throw PermissionDeniedException();
+    }
+    if(reports.count(report_id)==0){
+        throw NotFoundException();
+    }
 
+    Report *the_report = reports.at(report_id);
+    reports.erase(report_id);
+    delete the_report;
 }
 void Game::reject_invitation(string id)
 {
