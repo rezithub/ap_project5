@@ -160,11 +160,11 @@ void Game::dismiss_report(string report_id)
     delete the_report;
 }
 void Game::block_user(string username,string status){
-    if(users.count(username)==0){
-        throw NotFoundException();
-    }
     if(logged_in_user==nullptr||logged_in_user->user_type()==ADMIN_USER){
         throw PermissionDeniedException();
+    }
+    if(users.count(username)==0){
+        throw NotFoundException();
     }
     User *the_user=users.at(username);
     if(the_user->user_type()==ADMIN_USER){

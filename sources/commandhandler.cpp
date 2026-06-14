@@ -150,14 +150,7 @@ void CommandHandler::get_process(string action, string remaining_line)
         string username;
         bool find_username = false;
         read_username(remaining_line, username, find_username);
-        if (!find_username)
-        {
-            game->report_profile(username, !find_username);
-        }
-        else
-        {
-            game->report_profile(username, find_username);
-        }
+        game->report_profile(username, !find_username);
     }
     else if (action == "received_invitations")
     {
@@ -210,7 +203,7 @@ void read_casual_match_readiness(string remaining_line, string &is_ready)
         throw BadRequestException();
     }
 }
-void read_id(string remaining_line, string &invitation_id)
+void read_id(string remaining_line, string expected_key, string& id)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
@@ -218,10 +211,10 @@ void read_id(string remaining_line, string &invitation_id)
     string key;
     while (ss >> key)
     {
-        if (key == "invitation_id")
+        if (key == expected_key)
         {
             read_quote_symbole(ss);
-            getline(ss, invitation_id, QUOTE_SEPERATOR);
+            getline(ss, id, QUOTE_SEPERATOR);
             find_id = true;
         }
     }
@@ -361,14 +354,14 @@ void CommandHandler::post_process(string action, string remaining_line)
     else if (action == "start_match")
     {
         string invitation_id;
-        read_id(remaining_line, invitation_id);
+        read_id(remaining_line, "invitation_id" ,invitation_id);
         game->start_match(invitation_id);
         cout << "OK" << endl;
     }
     else if (action == "reject_invitation")
     {
         string invitation_id;
-        read_id(remaining_line, invitation_id);
+        read_id(remaining_line, "invitation_id" ,invitation_id);
         game->reject_invitation(invitation_id);
         cout << "OK" << endl;
     }
@@ -390,7 +383,7 @@ void CommandHandler::post_process(string action, string remaining_line)
     else if (action == "dismiss_report")
     {
         string report_id;
-        read_id(remaining_line, report_id);
+        read_id(remaining_line, "report_id" ,report_id);
         game->dismiss_report(report_id);
         cout << "OK" << endl;
     }
