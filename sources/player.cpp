@@ -10,6 +10,22 @@ Player::Player(string _username, string _password, int _xp, int _rp) : User(_use
     rp = _rp;
     player_status = NOT_IN_GAME_STATUS;
     is_ready_cs_match = false;
+}
+void Player::set_readiness_status(string the_status)
+{
+    this->is_ready_cs_match = (the_status == "true");
+}
+bool Player::get_readiness_status()
+{
+    return is_ready_cs_match;
+}
+string Player::get_player_status()
+{
+    return player_status;
+}
+string Player::get_level()
+{
+    string level;
     if (rp < 1400)
     {
         level = BORONZE_LEVEL;
@@ -26,21 +42,6 @@ Player::Player(string _username, string _password, int _xp, int _rp) : User(_use
     {
         level = PLATINUM_LEVEL;
     }
-}
-void Player::set_readiness_status(string the_status)
-{
-    this->is_ready_cs_match = (the_status == "true");
-}
-bool Player::get_readiness_status()
-{
-    return is_ready_cs_match;
-}
-string Player::get_player_status()
-{
-    return player_status;
-}
-string Player::get_level()
-{
     return level;
 }
 int Player::get_rp(){
@@ -104,7 +105,7 @@ void Player::show_received_invitations()
 void Player::print_detailes()
 {
     cout << "username: " << '"' << username << '"' << endl
-         << "Level: " << level << endl
+         << "Level: " << get_level() << endl
          << "RP: " << rp << endl
          << "XP: " << xp << endl
          << "Total wins: " << total_wins << endl

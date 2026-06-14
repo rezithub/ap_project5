@@ -17,7 +17,6 @@ private:
     int total_loses;
     bool is_ready_cs_match;
     std::string player_status;
-    std::string level;
     std::vector<Invitation *> received_invitations;
     std::set<User*> blocked_users;
 
