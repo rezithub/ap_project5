@@ -266,7 +266,7 @@ void read_action(string remaining_line, string &action)
         {
             read_quote_symbole(ss);
             getline(ss, action, QUOTE_SEPERATOR);
-            if (action != SHOOT_ACTION && action != DEFEND_ACTION && action != RELOAD_ACTION)
+            if (action != status::SHOOT && action != status::DEFEND && action != status::RELOAD)
             {
                 throw BadRequestException();
             }

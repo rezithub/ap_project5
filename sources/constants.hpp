@@ -1,15 +1,18 @@
 #ifndef _CONSTANTS_HPP_
 #define _CONSTANTS_HPP_
 #include <string>
+namespace status
+{
+    const std::string SHOOT = "shoot";
+    const std::string RELOAD = "reload";
+    const std::string PENDING = "pending";
+    const std::string DEFEND = "defend";   
+} 
 
 const std::string ADMIN_USER = "admin";
 const std::string PLAYER_USER = "player";
 const std::string NOT_IN_GAME_STATUS = "NOT_IN_GAME";
 const std::string IN_GAME_STATUS = "IN_GAME";
-const std::string SHOOT_ACTION = "shoot";
-const std::string RELOAD_ACTION = "reload";
-const std::string PENDING_STATUS = "pending";
-const std::string DEFEND_ACTION = "defend";
 const std::string BORONZE_LEVEL = "Bronze";
 const std::string SILVER_LEVEL = "Silver";
 const std::string GOLD_LEVEL = "Golden";
