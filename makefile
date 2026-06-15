@@ -26,7 +26,7 @@ invitation.o : sources/invitation.cpp sources/invitation.hpp sources/user.hpp
 player.o : sources/player.cpp sources/player.hpp sources/invitation.hpp sources/user.hpp sources/constants.hpp
 	$(CXX) -c $< -o $@
 report.o : sources/report.cpp sources/report.hpp
-	$(CXX) -c $< -o $@h
+	$(CXX) -c $< -o $@
 match.o : sources/match.cpp sources/match.hpp sources/matchplayer.hpp sources/exceptions.hpp
 	$(CXX) -c $< -o $@
 rankedmatch.o : sources/rankedmatch.cpp sources/rankedmatch.hpp sources/match.hpp sources/constants.hpp
