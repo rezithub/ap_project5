@@ -16,12 +16,16 @@ namespace user
 
 const std::string NOT_IN_GAME_STATUS = "NOT_IN_GAME";
 const std::string IN_GAME_STATUS = "IN_GAME";
-const std::string BORONZE_LEVEL = "Bronze";
-const std::string SILVER_LEVEL = "Silver";
-const std::string GOLD_LEVEL = "Golden";
+namespace level
+{
+    const std::string BORONZE = "Bronze";
+    const std::string SILVER = "Silver";
+    const std::string GOLD = "Golden";
+    const std::string PLATINUM = "Platinum";
+} // namespace name
+
 const std::string BLOCKED_STATUS = "blocked";
 const std::string UNBLOCKED_STATUS = "unblocked";
-const std::string PLATINUM_LEVEL = "Platinum";
 const std::string RANKED_MATCH = "ranked";
 const std::string CASUAL_MATCH = "casual";
 const int INITIAL_XP = 500;

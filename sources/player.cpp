@@ -51,19 +51,19 @@ string Player::get_level()
     string level;
     if (rp < 1400)
     {
-        level = BORONZE_LEVEL;
+        level = level::BORONZE;
     }
     else if (rp >= 1400 && rp < 1750)
     {
-        level = SILVER_LEVEL;
+        level = level::SILVER;
     }
     else if (rp >= 1750 && rp < 2250)
     {
-        level = GOLD_LEVEL;
+        level = level::GOLD;
     }
     else
     {
-        level = PLATINUM_LEVEL;
+        level = level::PLATINUM;
     }
     return level;
 }
@@ -116,7 +116,7 @@ void Player::add_invitation(Invitation *the_invitation)
 }
 string Player::user_type()
 {
-    return PLAYER_USER;
+    return user::PLAYER;
 }
 void Player::show_received_invitations()
 {

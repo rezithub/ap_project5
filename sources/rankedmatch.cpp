@@ -15,19 +15,19 @@ rankedmatch::rankedmatch(User *player1, User *player2)
 int calculate_delta_rp(string level)
 {
     int delta_rp = 0;
-    if (level == BORONZE_LEVEL)
+    if (level == level::BORONZE)
     {
         delta_rp = 75;
     }
-    else if (level == SILVER_LEVEL)
+    else if (level == level::SILVER)
     {
         delta_rp = 100;
     }
-    else if (level == GOLD_LEVEL)
+    else if (level == level::GOLD)
     {
         delta_rp = 125;
     }
-    else if (level == PLATINUM_LEVEL)
+    else if (level == level::PLATINUM)
     {
         delta_rp = 150;
     }
