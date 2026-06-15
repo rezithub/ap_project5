@@ -46,8 +46,10 @@ void rankedmatch::end_game_actions(User *winner, User *loser, int winner_health)
     int delta_rp = calculate_delta_rp(players_level);
     int winner_new_rp = winner->get_rp() + delta_rp + (winner_health * 25);
     winner->set_rp(winner_new_rp);
+    winner->win_match();
     int loser_new_rp = loser->get_rp() - delta_rp;
     loser->set_rp(loser_new_rp);
+    loser->lose_match();
 }
 void rankedmatch::print_rank_status(int bullets, int health)
 {
