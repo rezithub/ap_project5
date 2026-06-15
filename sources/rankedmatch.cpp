@@ -4,10 +4,10 @@ using namespace std;
 
 rankedmatch::rankedmatch(User *player1, User *player2)
     : match(player1, player2,
-            INTIAL_RN_HEALTH - player1->get_health_penalty_amount(),
-            INTIAL_RN_BULLET - player1->get_bullet_penalty_amount(),
-            INTIAL_RN_HEALTH - player2->get_health_penalty_amount(),
-            INTIAL_RN_BULLET - player2->get_bullet_penalty_amount())
+            INITIAL_RN_HEALTH - player1->get_health_penalty_amount(),
+            INITIAL_RN_BULLET - player1->get_bullet_penalty_amount(),
+            INITIAL_RN_HEALTH - player2->get_health_penalty_amount(),
+            INITIAL_RN_BULLET - player2->get_bullet_penalty_amount())
 {
     player1->consume_penalties();
     player2->consume_penalties();

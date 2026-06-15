@@ -4,7 +4,7 @@
 using namespace std;
 
 CasualMatch::CasualMatch(User *p1, User *p2)
-    : match(p1, p2, INTIAL_CS_HEALTH, INTIAL_CS_BULLET, INTIAL_CS_HEALTH, INTIAL_CS_BULLET) {}
+    : match(p1, p2, INITIAL_CS_HEALTH, INITIAL_CS_BULLET, INITIAL_CS_HEALTH, INITIAL_CS_BULLET) {}
 void CasualMatch::end_game_actions(User *winner, User *loser, int winner_health)
 {
     winner->set_player_status(NOT_IN_GAME_STATUS);
