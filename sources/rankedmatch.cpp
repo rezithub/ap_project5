@@ -51,6 +51,5 @@ void rankedmatch::end_game_actions(User *winner, User *loser, int winner_health)
 }
 void rankedmatch::print_rank_status(int bullets, int health)
 {
-    cout << "Your remaining bullets: " << bullets << endl;
     cout << "Your remaining health: " << health << endl;
 }
