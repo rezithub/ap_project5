@@ -216,8 +216,6 @@ void Game::start_match(string id)
     {
         throw PermissionDeniedException();
     }
-    player1->set_player_status(IN_GAME_STATUS);
-    player2->set_player_status(IN_GAME_STATUS);
     match *the_match;
     if (the_invitation->get_match_type() == CASUAL_MATCH)
     {
@@ -231,6 +229,8 @@ void Game::start_match(string id)
         }
         the_match = new rankedmatch(player1, player2);
     }
+    player1->set_player_status(IN_GAME_STATUS);
+    player2->set_player_status(IN_GAME_STATUS);
     users_matches[player2->get_username()] = the_match;
     users_matches[player1->get_username()] = the_match;
     invitations.erase(invite_id);
