@@ -15,7 +15,7 @@ namespace user
 }
 namespace level
 {
-    const std::string BORONZE = "Bronze";
+    const std::string BRONZE = "Bronze";
     const std::string SILVER = "Silver";
     const std::string GOLD = "Golden";
     const std::string PLATINUM = "Platinum";
@@ -36,7 +36,7 @@ namespace status
 }
 
 namespace deltarp{
-    const int BORONZE = 75;
+    const int BRONZE = 75;
     const int SILVER = 100;
     const int GOLD = 125;
     const int PLATINUM = 150;
@@ -45,8 +45,8 @@ namespace deltarp{
 
 const int INITIAL_XP = 500;
 const int INITIAL_RP = 1200;
-const char COMMA_SEPERATOR = ',';
-const char QUOTE_SEPERATOR = '"';
+const char COMMA_SEPARATOR = ',';
+const char QUOTE_SEPARATOR = '"';
 const int INITIAL_CS_BULLET = 1;
 const int INITIAL_CS_HEALTH = 1;
 const int INITIAL_RN_BULLET = 3;

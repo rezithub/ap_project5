@@ -51,7 +51,7 @@ string Player::get_level()
     string level;
     if (rp < 1400)
     {
-        level = level::BORONZE;
+        level = level::BRONZE;
     }
     else if (rp >= 1400 && rp < 1750)
     {

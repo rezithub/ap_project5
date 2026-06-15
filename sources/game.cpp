@@ -374,10 +374,10 @@ void Game::load_players(const string &filepath)
             continue;
         stringstream ss(line);
         string username, password, xp_str, rp_str;
-        getline(ss, username, COMMA_SEPERATOR);
-        getline(ss, password, COMMA_SEPERATOR);
-        getline(ss, xp_str, COMMA_SEPERATOR);
-        getline(ss, rp_str, COMMA_SEPERATOR);
+        getline(ss, username, COMMA_SEPARATOR);
+        getline(ss, password, COMMA_SEPARATOR);
+        getline(ss, xp_str, COMMA_SEPARATOR);
+        getline(ss, rp_str, COMMA_SEPARATOR);
         int xp = stoi(xp_str);
         int rp = stoi(rp_str);
         users[username] = new Player(username, password, xp, rp);
@@ -419,8 +419,8 @@ void Game::load_admins(const string &filepath)
             continue;
         stringstream ss(line);
         string username, password;
-        getline(ss, username, COMMA_SEPERATOR);
-        getline(ss, password, COMMA_SEPERATOR);
+        getline(ss, username, COMMA_SEPARATOR);
+        getline(ss, password, COMMA_SEPARATOR);
         users[username] = new Admin(username, password);
     }
     file.close();

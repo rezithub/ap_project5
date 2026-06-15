@@ -17,7 +17,7 @@ void read_quote_symbole(stringstream &ss)
 {
     char quote;
     ss >> quote;
-    if (quote != QUOTE_SEPERATOR)
+    if (quote != QUOTE_SEPARATOR)
     {
         throw BadRequestException();
     }
@@ -37,7 +37,7 @@ void fill_invitation_detailes(string &username, string &match_type, string remai
     {
         read_quote_symbole(ss);
         string value;
-        getline(ss, value, QUOTE_SEPERATOR);
+        getline(ss, value, QUOTE_SEPARATOR);
         if (key == "username")
         {
             username = value;
@@ -72,7 +72,7 @@ void fill_user_detailes(string &username, string &password, string remaining_lin
     {
         read_quote_symbole(ss);
         string value;
-        getline(ss, value, QUOTE_SEPERATOR);
+        getline(ss, value, QUOTE_SEPARATOR);
         if (key == "username")
         {
             username = value;
@@ -102,7 +102,7 @@ void read_match_detailes(string remaining_line, string &show_type)
         {
             find_sort = true;
             read_quote_symbole(ss);
-            getline(ss, show_type, QUOTE_SEPERATOR);
+            getline(ss, show_type, QUOTE_SEPARATOR);
             if (show_type != "asc" && show_type != "desc")
             {
                 throw BadRequestException();
@@ -119,7 +119,7 @@ void read_username(string remaining_line, string &username, bool &find_username)
     {
         read_quote_symbole(ss);
         string value;
-        getline(ss, value, QUOTE_SEPERATOR);
+        getline(ss, value, QUOTE_SEPARATOR);
         if (key == "username")
         {
             username = value;
@@ -190,7 +190,7 @@ void read_casual_match_readiness(string remaining_line, string &is_ready)
         if (key == "status")
         {
             read_quote_symbole(ss);
-            getline(ss, is_ready, QUOTE_SEPERATOR);
+            getline(ss, is_ready, QUOTE_SEPARATOR);
             if (is_ready != "true" && is_ready != "false")
             {
                 throw BadRequestException();
@@ -214,7 +214,7 @@ void read_id(string remaining_line, string expected_key, string &id)
         if (key == expected_key)
         {
             read_quote_symbole(ss);
-            getline(ss, id, QUOTE_SEPERATOR);
+            getline(ss, id, QUOTE_SEPARATOR);
             find_id = true;
         }
     }
@@ -233,7 +233,7 @@ void read_report(string remaining_line, string &username, string &reason)
     {
         read_quote_symbole(ss);
         string value;
-        getline(ss, value, QUOTE_SEPERATOR);
+        getline(ss, value, QUOTE_SEPARATOR);
         if (key == "username")
         {
             username = value;
@@ -265,7 +265,7 @@ void read_action(string remaining_line, string &action)
         if (key == "action")
         {
             read_quote_symbole(ss);
-            getline(ss, action, QUOTE_SEPERATOR);
+            getline(ss, action, QUOTE_SEPARATOR);
             if (action != action::SHOOT && action != action::DEFEND && action != action::RELOAD)
             {
                 throw BadRequestException();
@@ -288,7 +288,7 @@ void fill_block_detailes(string remaining_line, string &username, string &status
     {
         read_quote_symbole(ss);
         string value;
-        getline(ss, value, QUOTE_SEPERATOR);
+        getline(ss, value, QUOTE_SEPARATOR);
         if (key == "username")
         {
             username = value;
@@ -319,7 +319,7 @@ void fill_penalty_detailes(string remainin_line, int &report_id, string &penalty
     {
         read_quote_symbole(ss);
         string value;
-        getline(ss,value,QUOTE_SEPERATOR);
+        getline(ss,value,QUOTE_SEPARATOR);
         if(key=="report_id"){
             int id=stoi(value);
             report_id=id;

@@ -1,0 +1,1439 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <set>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <cstdlib>
+#include <iomanip>
+#include <exception>
+
+using namespace std;
+
+// ==================== constants.hpp ====================
+namespace action
+{
+    const string SHOOT = "shoot";
+    const string RELOAD = "reload";
+    const string PENDING = "pending";
+    const string DEFEND = "defend";
+}
+namespace user
+{
+    const string ADMIN = "admin";
+    const string PLAYER = "player";
+}
+namespace level
+{
+    const string BORONZE = "Bronze";
+    const string SILVER = "Silver";
+    const string GOLD = "Golden";
+    const string PLATINUM = "Platinum";
+}
+namespace Match
+{
+    const string RANKED = "ranked";
+    const string CASUAL = "casual";
+}
+namespace status
+{
+    const string NOT_IN_GAME = "NOT_IN_GAME";
+    const string IN_GAME = "IN_GAME";
+    const string BLOCKED = "blocked";
+    const string UNBLOCKED = "unblocked";
+}
+namespace deltarp
+{
+    const int BORONZE = 75;
+    const int SILVER = 100;
+    const int GOLD = 125;
+    const int PLATINUM = 150;
+}
+const int INITIAL_XP = 500;
+const int INITIAL_RP = 1200;
+const char COMMA_SEPERATOR = ',';
+const char QUOTE_SEPERATOR = '"';
+const int INITIAL_CS_BULLET = 1;
+const int INITIAL_CS_HEALTH = 1;
+const int INITIAL_RN_BULLET = 3;
+const int INITIAL_RN_HEALTH = 3;
+
+// ==================== exceptions.hpp ====================
+class BadRequestException : public exception
+{
+public:
+    const char *what() const noexcept override { return "Bad Request"; }
+};
+class NotFoundException : public exception
+{
+public:
+    const char *what() const noexcept override { return "Not Found"; }
+};
+class PermissionDeniedException : public exception
+{
+public:
+    const char *what() const noexcept override { return "Permission Denied"; }
+};
+class EmptyException : public exception
+{
+public:
+    const char *what() const noexcept override { return "Empty"; }
+};
+class LevelMisMatch : public exception
+{
+public:
+    const char *what() const noexcept override { return "Level Mismatch"; }
+};
+
+// forward declarations
+class Invitation;
+class match;
+class MatchPlayerState;
+
+// ==================== user.hpp ====================
+class User
+{
+protected:
+    string username;
+    string password;
+    int next_item_id;
+
+public:
+    User(string _username, string _password) : username(_username), password(_password), next_item_id(0) {}
+    virtual ~User() {}
+    string get_password() { return password; }
+    string get_username() { return username; }
+    virtual int get_xp() { throw PermissionDeniedException(); }
+    virtual void block(User *the_user, string status) { throw PermissionDeniedException(); }
+    virtual bool check_block(User *the_user) { throw PermissionDeniedException(); }
+    virtual int get_rp() { throw PermissionDeniedException(); }
+    virtual void set_xp(int new_xp) { throw PermissionDeniedException(); }
+    virtual void set_rp(int new_rp) { throw PermissionDeniedException(); }
+    virtual void health_penalty(int amount, int number_of_matches) { throw PermissionDeniedException(); }
+    virtual void bullet_penalty(int amount, int number_of_matches) { throw PermissionDeniedException(); }
+    virtual bool get_readiness_status() = 0;
+    virtual void set_readiness_status(string the_status) { throw PermissionDeniedException(); }
+    virtual string get_player_status() { throw PermissionDeniedException(); }
+    virtual string get_level() { throw PermissionDeniedException(); }
+    virtual void add_invitation(Invitation *the_invitation) { throw PermissionDeniedException(); }
+    virtual string user_type() = 0;
+    virtual void set_player_status(string the_status) { throw PermissionDeniedException(); }
+    virtual void remove_invitation(Invitation *the_invitation) { throw PermissionDeniedException(); }
+    virtual void print_detailes() { throw PermissionDeniedException(); }
+    virtual void show_received_invitations() { throw PermissionDeniedException(); }
+    virtual void win_match() { throw PermissionDeniedException(); }
+    virtual void lose_match() { throw PermissionDeniedException(); }
+    virtual int get_health_penalty_amount() { throw PermissionDeniedException(); }
+    virtual int get_bullet_penalty_amount() { throw PermissionDeniedException(); }
+    virtual void consume_penalties() { throw PermissionDeniedException(); }
+};
+
+// ==================== invitation.hpp ====================
+class Invitation
+{
+private:
+    User *origin_player;
+    User *destination_player;
+    string match_type;
+    int id;
+
+public:
+    Invitation(User *_origin_player, User *_destination_player, string _match_type, int _id)
+        : origin_player(_origin_player), destination_player(_destination_player), match_type(_match_type), id(_id) {}
+    User *get_origin_user() { return origin_player; }
+    User *get_destination_user() { return destination_player; }
+    int get_id() { return id; }
+    void print_detailes()
+    {
+        cout << id << ": Invitation from " << '"' << origin_player->get_username() << '"' << " for a " << '"' << match_type << '"' << " match" << endl;
+    }
+    string get_match_type() { return match_type; }
+};
+
+// ==================== report.hpp ====================
+class Report
+{
+private:
+    int id;
+    string sender_username;
+    string reciever_username;
+    string reason;
+
+public:
+    Report(int _id, string _sender_username, string _reciever_username, string _reason)
+        : id(_id), sender_username(_sender_username), reciever_username(_reciever_username), reason(_reason) {}
+    string get_reciever() { return reciever_username; }
+    void print_detailes()
+    {
+        cout << id << ": " << '"' << sender_username << '"' << " reported " << '"' << reciever_username << '"'
+             << " for: " << '"' << reason << '"' << endl;
+    }
+};
+
+// ==================== matchplayer.hpp ====================
+class MatchPlayerState
+{
+private:
+    User *player;
+    int bullets;
+    int health;
+    string current_action;
+    vector<string> move_history;
+
+public:
+    MatchPlayerState(User *_player, int init_health, int init_bullets)
+        : player(_player), bullets(init_bullets), health(init_health), current_action(action::PENDING) {}
+    string get_current_action() { return current_action; }
+    int get_bullets() { return bullets; }
+    void set_action(string action) { current_action = action; }
+    void shoot_bullet() { bullets -= 1; }
+    void reload_bullet() { bullets += 1; }
+    void decrease_health() { health--; }
+    int get_health() { return health; }
+    User *get_player() { return player; }
+    void update_history() { move_history.push_back(current_action); }
+    vector<string> get_history() { return move_history; }
+};
+
+// ==================== match.hpp ====================
+class match
+{
+protected:
+    MatchPlayerState player1_state;
+    MatchPlayerState player2_state;
+    int current_turn;
+    bool is_match_finished;
+
+    virtual void resolve_turn()
+    {
+        string player1_action = player1_state.get_current_action();
+        string player2_action = player2_state.get_current_action();
+        User *player1 = player1_state.get_player();
+        User *player2 = player2_state.get_player();
+        if (player1_action == action::PENDING || player2_action == action::PENDING)
+        {
+            return;
+        }
+        current_turn++;
+        player1_state.update_history();
+        player2_state.update_history();
+        do_action(player1, player1_action);
+        do_action(player2, player2_action);
+        if (player1_action == action::SHOOT && player2_action == action::RELOAD)
+        {
+            player2_state.decrease_health();
+            if (player2_state.get_health() == 0)
+            {
+                end_game_actions(player1, player2, player1_state.get_health());
+            }
+        }
+        else if (player2_action == action::SHOOT && player1_action == action::RELOAD)
+        {
+            player1_state.decrease_health();
+            if (player1_state.get_health() == 0)
+            {
+                end_game_actions(player2, player1, player2_state.get_health());
+            }
+        }
+        else
+        {
+            player1_state.set_action(action::PENDING);
+            player2_state.set_action(action::PENDING);
+        }
+    }
+
+    virtual void end_game_actions(User *winner, User *loser, int winner_health) = 0;
+
+    void do_action(User *player, string action)
+    {
+        MatchPlayerState &my_state = get_my_state(player);
+        if (action == action::SHOOT)
+        {
+            my_state.shoot_bullet();
+        }
+        else if (action == action::RELOAD)
+        {
+            my_state.reload_bullet();
+        }
+    }
+
+    MatchPlayerState &get_my_state(User *player)
+    {
+        if (player1_state.get_player() == player)
+            return player1_state;
+        else if (player2_state.get_player() == player)
+            return player2_state;
+        else
+            throw PermissionDeniedException();
+    }
+
+    MatchPlayerState &get_opponent_state(User *player)
+    {
+        if (player1_state.get_player() == player)
+            return player2_state;
+        else if (player2_state.get_player() == player)
+            return player1_state;
+        else
+            throw PermissionDeniedException();
+    }
+
+    virtual void print_rank_status(int bullets, int health) = 0;
+
+public:
+    match(User *p1, User *p2, int p1_health, int p1_bullets, int p2_health, int p2_bullets)
+        : player1_state(p1, p1_health, p1_bullets),
+          player2_state(p2, p2_health, p2_bullets),
+          current_turn(1),
+          is_match_finished(false) {}
+
+    void register_action(User *player, string action)
+    {
+        MatchPlayerState &my_state = get_my_state(player);
+        if (my_state.get_current_action() != action::PENDING)
+        {
+            throw PermissionDeniedException();
+        }
+        if (action == action::SHOOT && my_state.get_bullets() == 0)
+        {
+            throw BadRequestException();
+        }
+        my_state.set_action(action);
+        resolve_turn();
+    }
+
+    bool get_match_status() { return is_match_finished; }
+
+    void print_status(User *player)
+    {
+        MatchPlayerState &the_player = get_my_state(player);
+        MatchPlayerState &the_opponent = get_opponent_state(player);
+        cout << "Turn " << current_turn << endl;
+        cout << "You: " << the_player.get_current_action() << endl;
+        string opponent_action = the_opponent.get_current_action();
+        if (opponent_action == action::PENDING)
+        {
+            cout << "Your opponent: status::pending" << endl;
+        }
+        else
+        {
+            cout << "Your opponent: played" << endl;
+        }
+        // print history
+        vector<string> player_history = the_player.get_history();
+        vector<string> opponent_history = the_opponent.get_history();
+        if (player_history.size() != opponent_history.size())
+        {
+            cout << "Something Went Wrong in moves ! number of moves is not equal!" << endl;
+            throw BadRequestException();
+        }
+        cout << "History:" << endl;
+        cout << left << setw(20) << "Opponent's moves:" << "Your moves:" << endl;
+        for (size_t i = 0; i < player_history.size(); i++)
+        {
+            cout << left << setw(20) << opponent_history[i] << player_history[i] << endl;
+        }
+        cout << "Your remaining bullets: " << the_player.get_bullets() << endl;
+        print_rank_status(the_player.get_bullets(), the_player.get_health());
+    }
+};
+
+// ==================== rankedmatch.hpp ====================
+class rankedmatch : public match
+{
+private:
+    void end_game_actions(User *winner, User *loser, int winner_health) override;
+
+public:
+    rankedmatch(User *player1, User *player2)
+        : match(player1, player2,
+                INITIAL_RN_HEALTH - player1->get_health_penalty_amount(),
+                INITIAL_RN_BULLET - player1->get_bullet_penalty_amount(),
+                INITIAL_RN_HEALTH - player2->get_health_penalty_amount(),
+                INITIAL_RN_BULLET - player2->get_bullet_penalty_amount())
+    {
+        player1->consume_penalties();
+        player2->consume_penalties();
+    }
+    void print_rank_status(int bullets, int health) override
+    {
+        cout << "Your remaining health: " << health << endl;
+    }
+};
+
+// ==================== CasualMatch.hpp ====================
+class CasualMatch : public match
+{
+private:
+    void end_game_actions(User *winner, User *loser, int winner_health) override;
+
+public:
+    CasualMatch(User *player1, User *player2)
+        : match(player1, player2, INITIAL_CS_HEALTH, INITIAL_CS_BULLET, INITIAL_CS_HEALTH, INITIAL_CS_BULLET) {}
+    void print_rank_status(int bullets, int health) override {}
+};
+
+// ==================== player.hpp ====================
+struct Penalty
+{
+    int amount = 0;
+    int remaining_matches = 0;
+};
+
+class Player : public User
+{
+private:
+    int xp;
+    int rp;
+    int total_wins;
+    int total_loses;
+    bool is_ready_cs_match;
+    string player_status;
+    vector<Invitation *> received_invitations;
+    set<User *> blocked_users;
+    Penalty health_penalties;
+    Penalty bullet_penalties;
+
+public:
+    Player(string _username, string _password, int _xp, int _rp)
+        : User(_username, _password), xp(_xp), rp(_rp), total_wins(0), total_loses(0),
+          is_ready_cs_match(false), player_status(status::NOT_IN_GAME) {}
+
+    void set_readiness_status(string the_status) override
+    {
+        is_ready_cs_match = (the_status == "true");
+    }
+    void set_player_status(string the_status) override { player_status = the_status; }
+    bool get_readiness_status() override { return is_ready_cs_match; }
+    int get_xp() override { return xp; }
+    int get_rp() override { return rp; }
+    bool check_block(User *the_opponent) override
+    {
+        for (auto the_user : blocked_users)
+        {
+            if (the_user == the_opponent)
+                return true;
+        }
+        return false;
+    }
+    string get_level() override
+    {
+        if (rp < 1400)
+            return level::BORONZE;
+        else if (rp >= 1400 && rp < 1750)
+            return level::SILVER;
+        else if (rp >= 1750 && rp < 2250)
+            return level::GOLD;
+        else
+            return level::PLATINUM;
+    }
+    void set_xp(int newxp) override { xp = newxp; }
+    void set_rp(int newrp) override { rp = newrp; }
+    void add_invitation(Invitation *the_invitation) override
+    {
+        received_invitations.push_back(the_invitation);
+    }
+    void remove_invitation(Invitation *the_invitation) override
+    {
+        auto it = find(received_invitations.begin(), received_invitations.end(), the_invitation);
+        if (it != received_invitations.end())
+            received_invitations.erase(it);
+    }
+    string user_type() override { return user::PLAYER; }
+    string get_player_status() override { return player_status; }
+    void print_detailes() override
+    {
+        cout << "username: " << '"' << username << '"' << endl
+             << "Level: " << get_level() << endl
+             << "RP: " << rp << endl
+             << "XP: " << xp << endl
+             << "Total wins: " << total_wins << endl
+             << "Total losses: " << total_loses << endl;
+    }
+    void win_match() override { total_wins += 1; }
+    void lose_match() override { total_loses += 1; }
+    void show_received_invitations() override
+    {
+        if (received_invitations.empty())
+            throw EmptyException();
+        for (Invitation *inv : received_invitations)
+            inv->print_detailes();
+    }
+    void block(User *the_user, string status) override
+    {
+        if (status == status::BLOCKED)
+            blocked_users.insert(the_user);
+        else if (status == status::UNBLOCKED)
+            blocked_users.erase(the_user);
+    }
+    int get_health_penalty_amount() override
+    {
+        return (health_penalties.remaining_matches > 0) ? health_penalties.amount : 0;
+    }
+    int get_bullet_penalty_amount() override
+    {
+        return (bullet_penalties.remaining_matches > 0) ? bullet_penalties.amount : 0;
+    }
+    void consume_penalties() override
+    {
+        if (health_penalties.remaining_matches > 0)
+            health_penalties.remaining_matches--;
+        if (bullet_penalties.remaining_matches > 0)
+            bullet_penalties.remaining_matches--;
+    }
+    void health_penalty(int amount, int number_of_matches) override
+    {
+        health_penalties.amount = amount;
+        health_penalties.remaining_matches = number_of_matches;
+    }
+    void bullet_penalty(int amount, int number_of_matches) override
+    {
+        bullet_penalties.amount = amount;
+        bullet_penalties.remaining_matches = number_of_matches;
+    }
+};
+
+// ==================== admin.hpp ====================
+class Admin : public User
+{
+public:
+    Admin(string _username, string _password) : User(_username, _password) {}
+    bool get_readiness_status() override { return false; }
+    string user_type() override { return user::ADMIN; }
+};
+
+// ==================== game.hpp ====================
+class Game
+{
+private:
+    map<string, User *> users;
+    map<int, Report *> reports;
+    map<int, Invitation *> invitations;
+    map<string, match *> users_matches;
+    int next_invitation_id;
+    int next_report_id;
+    User *logged_in_user;
+
+    void remove_match(match *the_match)
+    {
+        for (auto it = users_matches.begin(); it != users_matches.end();)
+        {
+            if (it->second == the_match)
+                it = users_matches.erase(it);
+            else
+                ++it;
+        }
+        delete the_match;
+    }
+
+    void fill_opponents_map(User *the_opponent, map<string, int> &opponents_detailes, bool &opponent_exist, string match_type)
+    {
+        if (match_type == "casual")
+        {
+            if (the_opponent->get_readiness_status())
+            {
+                opponent_exist = true;
+                opponents_detailes[the_opponent->get_username()] = the_opponent->get_xp();
+            }
+        }
+        else if (match_type == "ranked")
+        {
+            if (the_opponent->get_level() == logged_in_user->get_level())
+            {
+                opponent_exist = true;
+                opponents_detailes[the_opponent->get_username()] = the_opponent->get_rp();
+            }
+        }
+    }
+
+public:
+    Game() : next_invitation_id(1), next_report_id(1), logged_in_user(nullptr) {}
+
+    ~Game()
+    {
+        for (auto &p : users)
+            delete p.second;
+        for (auto &p : reports)
+            delete p.second;
+        for (auto &p : invitations)
+            delete p.second;
+        set<match *> unique_matches;
+        for (auto &p : users_matches)
+            unique_matches.insert(p.second);
+        for (match *m : unique_matches)
+            delete m;
+    }
+
+    void register_user(string username, string password)
+    {
+        if (logged_in_user != nullptr)
+            throw PermissionDeniedException();
+        if (users.count(username) > 0)
+            throw BadRequestException();
+        Player *the_player = new Player(username, password, INITIAL_XP, INITIAL_RP);
+        users[username] = the_player;
+        logged_in_user = the_player;
+    }
+
+    void login_user(string entered_username, string entered_password)
+    {
+        if (logged_in_user != nullptr)
+            throw PermissionDeniedException();
+        if (users.count(entered_username) == 0)
+            throw NotFoundException();
+        User *the_user = users.at(entered_username);
+        if (the_user->get_password() != entered_password)
+            throw PermissionDeniedException();
+        logged_in_user = the_user;
+    }
+
+    void logout_user()
+    {
+        if (logged_in_user == nullptr)
+            throw PermissionDeniedException();
+        logged_in_user = nullptr;
+    }
+
+    void start_match(string id)
+    {
+        if (!check_invitation(id))
+            throw NotFoundException();
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+            throw PermissionDeniedException();
+        int invite_id = stoi(id);
+        Invitation *the_invitation = invitations.at(invite_id);
+        User *player1 = the_invitation->get_destination_user();
+        User *player2 = the_invitation->get_origin_user();
+        if (player1 != logged_in_user)
+            throw PermissionDeniedException();
+        if (player1->get_player_status() == status::IN_GAME || player2->get_player_status() == status::IN_GAME)
+            throw PermissionDeniedException();
+        match *the_match;
+        if (the_invitation->get_match_type() == Match::CASUAL)
+        {
+            the_match = new CasualMatch(player1, player2);
+        }
+        else if (the_invitation->get_match_type() == Match::RANKED)
+        {
+            if (player1->get_level() != player2->get_level())
+            {
+                invitations.erase(invite_id);
+                player1->remove_invitation(the_invitation);
+                delete the_invitation;
+                throw LevelMisMatch();
+            }
+            the_match = new rankedmatch(player1, player2);
+        }
+        player1->set_player_status(status::IN_GAME);
+        player2->set_player_status(status::IN_GAME);
+        users_matches[player2->get_username()] = the_match;
+        users_matches[player1->get_username()] = the_match;
+        invitations.erase(invite_id);
+        player1->remove_invitation(the_invitation);
+        delete the_invitation;
+    }
+
+    void reject_invitation(string id)
+    {
+        if (!check_invitation(id))
+            throw NotFoundException();
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+            throw PermissionDeniedException();
+        int invite_id = stoi(id);
+        Invitation *the_invitation = invitations.at(invite_id);
+        if (the_invitation->get_destination_user() != logged_in_user)
+            throw PermissionDeniedException();
+        invitations.erase(invite_id);
+        logged_in_user->remove_invitation(the_invitation);
+        delete the_invitation;
+    }
+
+    void change_status(string user_status)
+    {
+        if (logged_in_user == nullptr)
+            throw PermissionDeniedException();
+        logged_in_user->set_readiness_status(user_status);
+    }
+
+    void show_opponents(string show_type, string match_type)
+    {
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+            throw PermissionDeniedException();
+        bool opponent_exist = false;
+        map<string, int> opponents_detailes;
+        for (auto &[user_name, the_opponent] : users)
+        {
+            if (the_opponent == logged_in_user)
+                continue;
+            fill_opponents_map(the_opponent, opponents_detailes, opponent_exist, match_type);
+        }
+        if (!opponent_exist)
+            throw EmptyException();
+        vector<pair<string, int>> vec(opponents_detailes.begin(), opponents_detailes.end());
+        if (show_type == "asc")
+        {
+            sort(vec.begin(), vec.end(), [](const auto &a, const auto &b)
+                 {
+                if (a.second == b.second) return a.first < b.first;
+                return a.second < b.second; });
+        }
+        else if (show_type == "desc")
+        {
+            sort(vec.begin(), vec.end(), [](const auto &a, const auto &b)
+                 {
+                if (a.second == b.second) return a.first < b.first;
+                return a.second > b.second; });
+        }
+        int number = 1;
+        string value_name = (match_type == "casual") ? "XP" : "RP";
+        for (const auto &p : vec)
+        {
+            cout << number << ". " << p.first << " with " << p.second << " " << value_name << endl;
+            number++;
+        }
+    }
+
+    void post_inviation(string opponent_username, string match_type)
+    {
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+            throw PermissionDeniedException();
+        if (users.count(opponent_username) == 0)
+            throw NotFoundException();
+        User *the_opponent_user = users.at(opponent_username);
+        if (the_opponent_user->user_type() == user::ADMIN)
+            throw PermissionDeniedException();
+        if (the_opponent_user->check_block(logged_in_user))
+            throw NotFoundException();
+        Invitation *the_invitation = new Invitation(logged_in_user, the_opponent_user, match_type, next_invitation_id);
+        the_opponent_user->add_invitation(the_invitation);
+        invitations[next_invitation_id] = the_invitation;
+        next_invitation_id++;
+    }
+
+    void do_action(string action)
+    {
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+            throw PermissionDeniedException();
+        if (logged_in_user->get_player_status() == status::NOT_IN_GAME)
+            throw NotFoundException();
+        auto it = users_matches.find(logged_in_user->get_username());
+        if (it == users_matches.end())
+            throw NotFoundException();
+        match *the_match = it->second;
+        the_match->register_action(logged_in_user, action);
+        if (the_match->get_match_status())
+            remove_match(the_match);
+    }
+
+    void penalty(int report_id, string penalty_type, int amount, int number_of_matches)
+    {
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::PLAYER)
+            throw PermissionDeniedException();
+        if (reports.count(report_id) == 0)
+            throw NotFoundException();
+        Report *the_report = reports.at(report_id);
+        User *penalized_player = users.at(the_report->get_reciever());
+        if (penalty_type == "health_penalty")
+        {
+            penalized_player->health_penalty(amount, number_of_matches);
+        }
+        else if (penalty_type == "bullet_penalty")
+        {
+            penalized_player->bullet_penalty(amount, number_of_matches);
+        }
+        reports.erase(report_id);
+        delete the_report;
+    }
+
+    void show_match_status()
+    {
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+            throw PermissionDeniedException();
+        if (logged_in_user->get_player_status() == status::NOT_IN_GAME)
+            throw NotFoundException();
+        auto it = users_matches.find(logged_in_user->get_username());
+        if (it == users_matches.end())
+            throw NotFoundException();
+        match *the_match = it->second;
+        the_match->print_status(logged_in_user);
+    }
+
+    void dismiss_report(string report_id)
+    {
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::PLAYER)
+            throw PermissionDeniedException();
+        int id = stoi(report_id);
+        if (reports.count(id) == 0)
+            throw NotFoundException();
+        Report *the_report = reports.at(id);
+        reports.erase(id);
+        delete the_report;
+    }
+
+    void block_user(string username, string status)
+    {
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+            throw PermissionDeniedException();
+        if (users.count(username) == 0)
+            throw NotFoundException();
+        User *the_user = users.at(username);
+        if (the_user->user_type() == user::ADMIN)
+            throw BadRequestException();
+        logged_in_user->block(the_user, status);
+    }
+
+    void load_players(const string &filepath)
+    {
+        ifstream file(filepath);
+        if (!file.is_open())
+            return;
+        string line;
+        getline(file, line);
+        while (getline(file, line))
+        {
+            if (line.empty())
+                continue;
+            stringstream ss(line);
+            string username, password, xp_str, rp_str;
+            getline(ss, username, COMMA_SEPERATOR);
+            getline(ss, password, COMMA_SEPERATOR);
+            getline(ss, xp_str, COMMA_SEPERATOR);
+            getline(ss, rp_str, COMMA_SEPERATOR);
+            int xp = stoi(xp_str);
+            int rp = stoi(rp_str);
+            users[username] = new Player(username, password, xp, rp);
+        }
+        file.close();
+    }
+
+    void load_admins(const string &filepath)
+    {
+        ifstream file(filepath);
+        if (!file.is_open())
+            return;
+        string line;
+        getline(file, line);
+        while (getline(file, line))
+        {
+            if (line.empty())
+                continue;
+            stringstream ss(line);
+            string username, password;
+            getline(ss, username, COMMA_SEPERATOR);
+            getline(ss, password, COMMA_SEPERATOR);
+            users[username] = new Admin(username, password);
+        }
+        file.close();
+    }
+
+    void add_report(string username, string reason)
+    {
+        if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+            throw PermissionDeniedException();
+        if (!user_exists(username))
+            throw NotFoundException();
+        Report *the_report = new Report(next_report_id, logged_in_user->get_username(), username, reason);
+        reports[next_report_id] = the_report;
+        next_report_id++;
+    }
+
+    void report_profile(string username, bool show_own)
+    {
+        if (logged_in_user == nullptr)
+            throw PermissionDeniedException();
+        if (show_own)
+            username = logged_in_user->get_username();
+        if (!user_exists(username))
+            throw NotFoundException();
+        User *the_user = users.at(username);
+        if (the_user->user_type() == user::ADMIN || (show_own && logged_in_user->user_type() == user::ADMIN))
+            throw PermissionDeniedException();
+        the_user->print_detailes();
+    }
+
+    void show_user_invitations()
+    {
+        if (logged_in_user == nullptr)
+            throw PermissionDeniedException();
+        logged_in_user->show_received_invitations();
+    }
+
+    void show_reports()
+    {
+        if (logged_in_user == nullptr || logged_in_user->user_type() != user::ADMIN)
+            throw PermissionDeniedException();
+        if (reports.empty())
+            throw EmptyException();
+        for (auto &[id, the_report] : reports)
+            the_report->print_detailes();
+    }
+
+    bool check_invitation(string invitation_id)
+    {
+        int id;
+        try
+        {
+            id = stoi(invitation_id);
+        }
+        catch (...)
+        {
+            throw BadRequestException();
+        }
+        return invitations.count(id) != 0;
+    }
+
+    bool user_exists(string the_username)
+    {
+        return users.count(the_username) > 0;
+    }
+};
+
+// ==================== commandhandler.hpp ====================
+class CommandHandler
+{
+private:
+    Game *game;
+
+    void get_process(string action, string remaining_line);
+    void post_process(string action, string remaining_line);
+    void put_process(string action, string remaining_line) { throw NotFoundException(); }
+    void delete_process(string action, string remaining_line) { throw NotFoundException(); }
+
+public:
+    CommandHandler(Game &UTGame) : game(&UTGame) {}
+    void run();
+};
+
+// ==================== commandhandler.cpp ====================
+static void read_question_symbole(stringstream &ss)
+{
+    char q;
+    if (!(ss >> q) || q != '?')
+        throw BadRequestException();
+}
+static void read_quote_symbole(stringstream &ss)
+{
+    char q;
+    ss >> q;
+    if (q != QUOTE_SEPERATOR)
+        throw BadRequestException();
+}
+
+void CommandHandler::get_process(string action, string remaining_line)
+{
+    if (action == "casual_match_opponents")
+    {
+        string show_type = "desc";
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        while (ss >> key)
+        {
+            if (key == "sort_order")
+            {
+                read_quote_symbole(ss);
+                getline(ss, show_type, QUOTE_SEPERATOR);
+                if (show_type != "asc" && show_type != "desc")
+                    throw BadRequestException();
+            }
+        }
+        game->show_opponents(show_type, "casual");
+    }
+    else if (action == "ranked_match_opponents")
+    {
+        string show_type = "desc";
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        while (ss >> key)
+        {
+            if (key == "sort_order")
+            {
+                read_quote_symbole(ss);
+                getline(ss, show_type, QUOTE_SEPERATOR);
+                if (show_type != "asc" && show_type != "desc")
+                    throw BadRequestException();
+            }
+        }
+        game->show_opponents(show_type, "ranked");
+    }
+    else if (action == "profile")
+    {
+        string username;
+        bool find_username = false;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        while (ss >> key)
+        {
+            read_quote_symbole(ss);
+            string value;
+            getline(ss, value, QUOTE_SEPERATOR);
+            if (key == "username")
+            {
+                username = value;
+                if (username.empty())
+                    throw BadRequestException();
+                find_username = true;
+            }
+        }
+        game->report_profile(username, !find_username);
+    }
+    else if (action == "received_invitations")
+    {
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        game->show_user_invitations();
+    }
+    else if (action == "reports")
+    {
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        game->show_reports();
+    }
+    else if (action == "match_status")
+    {
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        game->show_match_status();
+    }
+    else
+    {
+        throw NotFoundException();
+    }
+}
+
+void CommandHandler::post_process(string action, string remaining_line)
+{
+    if (action == "register")
+    {
+        string username, password;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_u = false, find_p = false;
+        while (ss >> key)
+        {
+            read_quote_symbole(ss);
+            string value;
+            getline(ss, value, QUOTE_SEPERATOR);
+            if (key == "username")
+            {
+                username = value;
+                find_u = true;
+            }
+            else if (key == "password")
+            {
+                password = value;
+                find_p = true;
+            }
+        }
+        if (!find_u || !find_p)
+            throw BadRequestException();
+        game->register_user(username, password);
+        cout << "OK" << endl;
+    }
+    else if (action == "login")
+    {
+        string username, password;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_u = false, find_p = false;
+        while (ss >> key)
+        {
+            read_quote_symbole(ss);
+            string value;
+            getline(ss, value, QUOTE_SEPERATOR);
+            if (key == "username")
+            {
+                username = value;
+                find_u = true;
+            }
+            else if (key == "password")
+            {
+                password = value;
+                find_p = true;
+            }
+        }
+        if (!find_u || !find_p)
+            throw BadRequestException();
+        game->login_user(username, password);
+        cout << "OK" << endl;
+    }
+    else if (action == "logout")
+    {
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        game->logout_user();
+        cout << "OK" << endl;
+    }
+    else if (action == "casual_match_ready")
+    {
+        string is_ready;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_status = false;
+        while (ss >> key)
+        {
+            if (key == "status")
+            {
+                read_quote_symbole(ss);
+                getline(ss, is_ready, QUOTE_SEPERATOR);
+                if (is_ready != "true" && is_ready != "false")
+                    throw BadRequestException();
+                find_status = true;
+            }
+        }
+        if (!find_status)
+            throw BadRequestException();
+        game->change_status(is_ready);
+        cout << "OK" << endl;
+    }
+    else if (action == "invitation")
+    {
+        string opponent_username, match_type;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_u = false, find_m = false;
+        while (ss >> key)
+        {
+            read_quote_symbole(ss);
+            string value;
+            getline(ss, value, QUOTE_SEPERATOR);
+            if (key == "username")
+            {
+                opponent_username = value;
+                find_u = true;
+            }
+            else if (key == "match_type")
+            {
+                match_type = value;
+                find_m = true;
+            }
+        }
+        if (!find_u || !find_m)
+            throw BadRequestException();
+        if (match_type != Match::CASUAL && match_type != Match::RANKED)
+            throw BadRequestException();
+        game->post_inviation(opponent_username, match_type);
+        cout << "OK" << endl;
+    }
+    else if (action == "start_match")
+    {
+        string invitation_id;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_id = false;
+        while (ss >> key)
+        {
+            if (key == "invitation_id")
+            {
+                read_quote_symbole(ss);
+                getline(ss, invitation_id, QUOTE_SEPERATOR);
+                find_id = true;
+            }
+        }
+        if (!find_id)
+            throw BadRequestException();
+        game->start_match(invitation_id);
+        cout << "OK" << endl;
+    }
+    else if (action == "reject_invitation")
+    {
+        string invitation_id;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_id = false;
+        while (ss >> key)
+        {
+            if (key == "invitation_id")
+            {
+                read_quote_symbole(ss);
+                getline(ss, invitation_id, QUOTE_SEPERATOR);
+                find_id = true;
+            }
+        }
+        if (!find_id)
+            throw BadRequestException();
+        game->reject_invitation(invitation_id);
+        cout << "OK" << endl;
+    }
+    else if (action == "report")
+    {
+        string username, reason;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_u = false, find_r = false;
+        while (ss >> key)
+        {
+            read_quote_symbole(ss);
+            string value;
+            getline(ss, value, QUOTE_SEPERATOR);
+            if (key == "username")
+            {
+                username = value;
+                find_u = true;
+            }
+            else if (key == "reason")
+            {
+                reason = value;
+                find_r = true;
+            }
+        }
+        if (!find_u || !find_r)
+            throw BadRequestException();
+        game->add_report(username, reason);
+        cout << "OK" << endl;
+    }
+    else if (action == "action")
+    {
+        string act;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_a = false;
+        while (ss >> key)
+        {
+            if (key == "action")
+            {
+                read_quote_symbole(ss);
+                getline(ss, act, QUOTE_SEPERATOR);
+                if (act != action::SHOOT && act != action::DEFEND && act != action::RELOAD)
+                    throw BadRequestException();
+                find_a = true;
+            }
+        }
+        if (!find_a)
+            throw BadRequestException();
+        game->do_action(act);
+        cout << "OK" << endl;
+    }
+    else if (action == "dismiss_report")
+    {
+        string report_id;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_id = false;
+        while (ss >> key)
+        {
+            if (key == "report_id")
+            {
+                read_quote_symbole(ss);
+                getline(ss, report_id, QUOTE_SEPERATOR);
+                find_id = true;
+            }
+        }
+        if (!find_id)
+            throw BadRequestException();
+        game->dismiss_report(report_id);
+        cout << "OK" << endl;
+    }
+    else if (action == "block")
+    {
+        string username, status;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_u = false, find_s = false;
+        while (ss >> key)
+        {
+            read_quote_symbole(ss);
+            string value;
+            getline(ss, value, QUOTE_SEPERATOR);
+            if (key == "username")
+            {
+                username = value;
+                find_u = true;
+            }
+            else if (key == "status")
+            {
+                status = value;
+                if (status != "blocked" && status != "unblocked")
+                    throw BadRequestException();
+                find_s = true;
+            }
+        }
+        if (!find_u || !find_s)
+            throw BadRequestException();
+        game->block_user(username, status);
+        cout << "OK" << endl;
+    }
+    else if (action == "penalty")
+    {
+        int report_id, amount, number_of_matches;
+        string penalty_type;
+        stringstream ss(remaining_line);
+        read_question_symbole(ss);
+        string key;
+        bool find_id = false, find_type = false, find_amount = false, find_num = false;
+        while (ss >> key)
+        {
+            read_quote_symbole(ss);
+            string value;
+            getline(ss, value, QUOTE_SEPERATOR);
+            if (key == "report_id")
+            {
+                report_id = stoi(value);
+                find_id = true;
+            }
+            else if (key == "type")
+            {
+                penalty_type = value;
+                find_type = true;
+            }
+            else if (key == "amount")
+            {
+                amount = stoi(value);
+                find_amount = true;
+            }
+            else if (key == "number_of_matches")
+            {
+                number_of_matches = stoi(value);
+                if (number_of_matches < 1)
+                    throw BadRequestException();
+                find_num = true;
+            }
+        }
+        if (!find_id || !find_type || !find_amount || !find_num)
+            throw BadRequestException();
+        if (penalty_type == "health_penalty")
+        {
+            if (amount < 1 || amount > 2)
+                throw BadRequestException();
+        }
+        else if (penalty_type == "bullet_penalty")
+        {
+            if (amount < 1 || amount > 3)
+                throw BadRequestException();
+        }
+        else
+        {
+            throw BadRequestException();
+        }
+        game->penalty(report_id, penalty_type, amount, number_of_matches);
+        cout << "OK" << endl;
+    }
+    else
+    {
+        throw NotFoundException();
+    }
+}
+
+void CommandHandler::run()
+{
+    string line;
+    while (getline(cin, line))
+    {
+        if (line.empty())
+            continue;
+        stringstream ss(line);
+        string command;
+        ss >> command;
+        try
+        {
+            string action;
+            ss >> action;
+            string remaining_line;
+            getline(ss, remaining_line);
+            if (command == "GET")
+                get_process(action, remaining_line);
+            else if (command == "POST")
+                post_process(action, remaining_line);
+            else if (command == "PUT")
+                put_process(action, remaining_line);
+            else if (command == "DELETE")
+                delete_process(action, remaining_line);
+            else
+                throw BadRequestException();
+        }
+        catch (const BadRequestException &e)
+        {
+            cout << e.what() << endl;
+        }
+        catch (const NotFoundException &e)
+        {
+            cout << e.what() << endl;
+        }
+        catch (const PermissionDeniedException &e)
+        {
+            cout << e.what() << endl;
+        }
+        catch (const EmptyException &e)
+        {
+            cout << e.what() << endl;
+        }
+        catch (const exception &e)
+        {
+            cout << "An unexpected error occurred: " << e.what() << endl;
+        }
+    }
+}
+
+// ==================== rankedmatch.cpp (implementations) ====================
+int calculate_delta_rp(string level)
+{
+    if (level == level::BORONZE)
+        return deltarp::BORONZE;
+    else if (level == level::SILVER)
+        return deltarp::SILVER;
+    else if (level == level::GOLD)
+        return deltarp::GOLD;
+    else if (level == level::PLATINUM)
+        return deltarp::PLATINUM;
+    else
+        throw BadRequestException();
+}
+
+void rankedmatch::end_game_actions(User *winner, User *loser, int winner_health)
+{
+    winner->set_player_status(status::NOT_IN_GAME);
+    loser->set_player_status(status::NOT_IN_GAME);
+    is_match_finished = true;
+    string players_level = winner->get_level();
+    int delta_rp = calculate_delta_rp(players_level);
+    int winner_new_rp = winner->get_rp() + delta_rp + (winner_health * 25);
+    winner->set_rp(winner_new_rp);
+    winner->win_match();
+    int loser_new_rp = loser->get_rp() - delta_rp;
+    loser->set_rp(loser_new_rp);
+    loser->lose_match();
+}
+
+// ==================== CasualMatch.cpp ====================
+void CasualMatch::end_game_actions(User *winner, User *loser, int winner_health)
+{
+    winner->set_player_status(status::NOT_IN_GAME);
+    loser->set_player_status(status::NOT_IN_GAME);
+    is_match_finished = true;
+    int winner_xp = winner->get_xp();
+    int loser_xp = loser->get_xp();
+    int delta_xp = max(5, int(50 - (0.1 * (winner_xp - loser_xp))));
+    winner->set_xp(winner_xp + delta_xp);
+    loser->set_xp(loser_xp - delta_xp);
+    winner->win_match();
+    loser->lose_match();
+}
+
+// ==================== main.cpp ====================
+int main(int argc, char *argv[])
+{
+    if (argc < 3)
+    {
+        cout << "Error : input users & admins file please !" << endl;
+        return 1;
+    }
+    Game UTGame;
+    UTGame.load_players(argv[1]);
+    UTGame.load_admins(argv[2]);
+    CommandHandler commandhandler(UTGame);
+    commandhandler.run();
+    return 0;
+}
