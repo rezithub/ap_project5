@@ -266,7 +266,7 @@ void read_action(string remaining_line, string &action)
         {
             read_quote_symbole(ss);
             getline(ss, action, QUOTE_SEPERATOR);
-            if (action != status::SHOOT && action != status::DEFEND && action != status::RELOAD)
+            if (action != action::SHOOT && action != action::DEFEND && action != action::RELOAD)
             {
                 throw BadRequestException();
             }
@@ -379,7 +379,7 @@ void CommandHandler::post_process(string action, string remaining_line)
         string opponent_username;
         string match_type;
         fill_invitation_detailes(opponent_username, match_type, remaining_line);
-        if (match_type != CASUAL_MATCH && match_type != RANKED_MATCH)
+        if (match_type != Match::CASUAL && match_type != Match::RANKED)
         {
             throw BadRequestException();
         }

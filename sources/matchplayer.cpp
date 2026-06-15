@@ -5,7 +5,7 @@ MatchPlayerState::MatchPlayerState(User *_player, int init_health, int init_bull
     player = _player;
     bullets = init_bullets;
     health = init_health;
-    current_action = status::PENDING;
+    current_action = action::PENDING;
 }
 string MatchPlayerState::get_current_action()
 {

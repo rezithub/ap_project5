@@ -1,7 +1,7 @@
 #ifndef _CONSTANTS_HPP_
 #define _CONSTANTS_HPP_
 #include <string>
-namespace status
+namespace action
 {
     const std::string SHOOT = "shoot";
     const std::string RELOAD = "reload";
@@ -13,21 +13,24 @@ namespace user
     const std::string ADMIN = "admin";
     const std::string PLAYER = "player";
 }
-
-const std::string NOT_IN_GAME_STATUS = "NOT_IN_GAME";
-const std::string IN_GAME_STATUS = "IN_GAME";
 namespace level
 {
     const std::string BORONZE = "Bronze";
     const std::string SILVER = "Silver";
     const std::string GOLD = "Golden";
     const std::string PLATINUM = "Platinum";
-} // namespace name
+}
 
+namespace Match
+{
+    const std::string RANKED = "ranked";
+    const std::string CASUAL = "casual";
+}
+const std::string NOT_IN_GAME_STATUS = "NOT_IN_GAME";
+const std::string IN_GAME_STATUS = "IN_GAME";
 const std::string BLOCKED_STATUS = "blocked";
 const std::string UNBLOCKED_STATUS = "unblocked";
-const std::string RANKED_MATCH = "ranked";
-const std::string CASUAL_MATCH = "casual";
+
 const int INITIAL_XP = 500;
 const int INITIAL_RP = 1200;
 const char COMMA_SEPERATOR = ',';

@@ -217,11 +217,11 @@ void Game::start_match(string id)
         throw PermissionDeniedException();
     }
     match *the_match;
-    if (the_invitation->get_match_type() == CASUAL_MATCH)
+    if (the_invitation->get_match_type() == Match::CASUAL)
     {
         the_match = new CasualMatch(player1, player2);
     }
-    else if (the_invitation->get_match_type() == RANKED_MATCH)
+    else if (the_invitation->get_match_type() == Match::RANKED)
     {
         if (player1->get_level() != player2->get_level())
         {
