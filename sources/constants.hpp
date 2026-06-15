@@ -26,10 +26,14 @@ namespace Match
     const std::string RANKED = "ranked";
     const std::string CASUAL = "casual";
 }
-const std::string NOT_IN_GAME_STATUS = "NOT_IN_GAME";
-const std::string IN_GAME_STATUS = "IN_GAME";
-const std::string BLOCKED_STATUS = "blocked";
-const std::string UNBLOCKED_STATUS = "unblocked";
+
+namespace status
+{
+    const std::string NOT_IN_GAME = "NOT_IN_GAME";
+    const std::string IN_GAME = "IN_GAME";
+    const std::string BLOCKED = "blocked";
+    const std::string UNBLOCKED = "unblocked";
+}
 
 const int INITIAL_XP = 500;
 const int INITIAL_RP = 1200;

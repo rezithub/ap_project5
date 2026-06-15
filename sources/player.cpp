@@ -8,7 +8,7 @@ Player::Player(string _username, string _password, int _xp, int _rp) : User(_use
     total_wins = 0;
     xp = _xp;
     rp = _rp;
-    player_status = NOT_IN_GAME_STATUS;
+    player_status = status::NOT_IN_GAME;
     is_ready_cs_match = false;
 }
 int Player::get_health_penalty_amount()
@@ -140,11 +140,11 @@ void Player::print_detailes()
 }
 void Player::block(User *the_user, string status)
 {
-    if (status == BLOCKED_STATUS)
+    if (status == status::BLOCKED)
     {
         blocked_users.insert(the_user);
     }
-    else if (status == UNBLOCKED_STATUS)
+    else if (status == status::UNBLOCKED)
     {
         blocked_users.erase(the_user);
     }

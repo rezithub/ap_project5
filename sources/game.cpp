@@ -81,7 +81,7 @@ void Game::do_action(string action)
     {
         throw PermissionDeniedException();
     }
-    if (logged_in_user->get_player_status() == NOT_IN_GAME_STATUS)
+    if (logged_in_user->get_player_status() == status::NOT_IN_GAME)
     {
         throw NotFoundException();
     }
@@ -124,7 +124,7 @@ void Game::show_match_status()
     {
         throw PermissionDeniedException();
     }
-    if (logged_in_user->get_player_status() == NOT_IN_GAME_STATUS)
+    if (logged_in_user->get_player_status() == status::NOT_IN_GAME)
     {
         throw NotFoundException();
     }
@@ -212,7 +212,7 @@ void Game::start_match(string id)
     {
         throw PermissionDeniedException();
     }
-    if (player1->get_player_status() == IN_GAME_STATUS || player2->get_player_status() == IN_GAME_STATUS)
+    if (player1->get_player_status() == status::IN_GAME || player2->get_player_status() == status::IN_GAME)
     {
         throw PermissionDeniedException();
     }
@@ -232,8 +232,8 @@ void Game::start_match(string id)
         }
         the_match = new rankedmatch(player1, player2);
     }
-    player1->set_player_status(IN_GAME_STATUS);
-    player2->set_player_status(IN_GAME_STATUS);
+    player1->set_player_status(status::IN_GAME);
+    player2->set_player_status(status::IN_GAME);
     users_matches[player2->get_username()] = the_match;
     users_matches[player1->get_username()] = the_match;
     invitations.erase(invite_id);
