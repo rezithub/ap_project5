@@ -20,8 +20,8 @@ public:
     virtual void block(User *the_user, std::string status);
     virtual bool check_block(User *the_user);
     virtual int get_rp();
-    virtual void set_xp(int newxp);
-    virtual void set_rp(int newrp);
+    virtual void set_xp(int new_xp);
+    virtual void set_rp(int new_rp);
     virtual void health_penalty(int amount, int number_of_matches);
     virtual void bullet_penalty(int amount, int number_of_matches);
     virtual bool get_readiness_status() = 0;

@@ -35,6 +35,14 @@ namespace status
     const std::string UNBLOCKED = "unblocked";
 }
 
+namespace deltarp{
+    const int BORONZE = 75;
+    const int SILVER = 100;
+    const int GOLD = 125;
+    const int PLATINUM = 150;
+
+}
+
 const int INITIAL_XP = 500;
 const int INITIAL_RP = 1200;
 const char COMMA_SEPERATOR = ',';

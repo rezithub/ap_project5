@@ -17,19 +17,19 @@ int calculate_delta_rp(string level)
     int delta_rp = 0;
     if (level == level::BORONZE)
     {
-        delta_rp = 75;
+        delta_rp = deltarp::BORONZE;
     }
     else if (level == level::SILVER)
     {
-        delta_rp = 100;
+        delta_rp = deltarp::SILVER;
     }
     else if (level == level::GOLD)
     {
-        delta_rp = 125;
+        delta_rp = deltarp::GOLD;
     }
     else if (level == level::PLATINUM)
     {
-        delta_rp = 150;
+        delta_rp = deltarp::PLATINUM;
     }
     else
     {
