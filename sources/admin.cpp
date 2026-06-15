@@ -8,5 +8,5 @@ bool Admin::get_readiness_status()
 }
 string Admin::user_type()
 {
-    return ADMIN_USER;
+    return user::ADMIN;
 }

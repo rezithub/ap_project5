@@ -6,11 +6,14 @@ namespace status
     const std::string SHOOT = "shoot";
     const std::string RELOAD = "reload";
     const std::string PENDING = "pending";
-    const std::string DEFEND = "defend";   
-} 
+    const std::string DEFEND = "defend";
+}
+namespace user
+{
+    const std::string ADMIN = "admin";
+    const std::string PLAYER = "player";
+}
 
-const std::string ADMIN_USER = "admin";
-const std::string PLAYER_USER = "player";
 const std::string NOT_IN_GAME_STATUS = "NOT_IN_GAME";
 const std::string IN_GAME_STATUS = "IN_GAME";
 const std::string BORONZE_LEVEL = "Bronze";
