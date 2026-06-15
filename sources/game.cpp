@@ -225,6 +225,9 @@ void Game::start_match(string id)
     {
         if (player1->get_level() != player2->get_level())
         {
+            invitations.erase(invite_id);
+            player1->remove_invitation(the_invitation);
+            delete the_invitation;
             throw LevelMisMatch();
         }
         the_match = new rankedmatch(player1, player2);
