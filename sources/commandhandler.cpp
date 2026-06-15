@@ -449,6 +449,7 @@ void CommandHandler::post_process(string action, string remaining_line)
             throw BadRequestException();
         }
         game->penalty(report_id,penalty_type,amount,number_of_matches);
+        cout << "OK" << endl;
     }
     else
     {
