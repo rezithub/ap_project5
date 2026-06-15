@@ -136,8 +136,8 @@ void match::resolve_turn()
     }
 }
 match::match(User *p1, User *p2, int p1_health, int p1_bullets, int p2_health, int p2_bullets)
-    : player1_state(p1, p1_bullets, p1_health),
-      player2_state(p2, p2_bullets, p2_health)
+    : player1_state(p1, p1_health, p1_bullets),
+      player2_state(p2, p2_health, p2_bullets)
 {
     current_turn = 1;
     is_match_finished = false;
