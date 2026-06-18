@@ -188,13 +188,13 @@ bool Game::check_invitation(string intivation_id)
 }
 void Game::start_match(string id)
 {
-    if (!check_invitation(id))
-    {
-        throw NotFoundException();
-    }
     if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
+    }
+    if (!check_invitation(id))
+    {
+        throw NotFoundException();
     }
     int invite_id;
     try
@@ -262,13 +262,13 @@ void Game::penalty(int report_id,std::string penalty_type,int amount,int number_
 }
 void Game::reject_invitation(string id)
 {
-    if (!check_invitation(id))
-    {
-        throw NotFoundException();
-    }
     if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
+    }
+    if (!check_invitation(id))
+    {
+        throw NotFoundException();
     }
     int invite_id;
     try
