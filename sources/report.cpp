@@ -10,7 +10,7 @@ Report::Report(int _id, string _sender_username, string _reciever_username, stri
 }
 string Report::get_deatiles()
 {
-    string deatail = id + ": " + '"' + sender_username + '"' +
+    string deatail = to_string(id) + ": " + '"' + sender_username + '"' +
                      " reported " + '"' + reciever_username + '"' + " for: " + '"' + reason + '"';
     return deatail;
 }
