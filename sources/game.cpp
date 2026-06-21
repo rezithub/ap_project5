@@ -57,7 +57,8 @@ void Game::show_reports()
     }
     for (auto &[id, the_report] : reports)
     {
-        the_report->print_detailes();
+        string detail=the_report->get_deatiles();
+        cout << detail << endl;
     }
 }
 void Game::remove_match(match *the_match)

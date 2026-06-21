@@ -8,11 +8,11 @@ Report::Report(int _id, string _sender_username, string _reciever_username, stri
     reciever_username = _reciever_username;
     reason = _reason;
 }
-void Report::print_detailes()
+string Report::get_deatiles()
 {
-    cout << id << ": " << '"' << sender_username << '"' <<
-    " reported " << '"' << reciever_username << '"'   
-    << " for: " << '"' << reason << '"' << endl;
+    string deatail = id + ": " + '"' + sender_username + '"' +
+                     " reported " + '"' + reciever_username + '"' + " for: " + '"' + reason + '"';
+    return deatail;
 }
 string Report::get_reciever()
 {
