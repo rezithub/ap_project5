@@ -16,7 +16,7 @@ public:
     User *get_origin_user();
     User *get_destination_user();
     int get_id();
-    void print_detailes();
+    std::string get_detailes();
     std::string get_match_type();
 };
 
