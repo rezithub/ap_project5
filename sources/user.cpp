@@ -77,7 +77,7 @@ void User::set_player_status(std::string the_status)
     throw PermissionDeniedException();
 }
 
-void User::print_detailes()
+string User::get_detailes()
 {
     throw PermissionDeniedException();
 }

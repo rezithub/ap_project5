@@ -117,7 +117,7 @@ void Game::report_profile(string username, bool show_own)
     {
         throw PermissionDeniedException();
     }
-    the_user->print_detailes();
+    cout << the_user->get_detailes() << endl;
 }
 void Game::show_match_status()
 {

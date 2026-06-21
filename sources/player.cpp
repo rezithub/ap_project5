@@ -129,14 +129,16 @@ void Player::show_received_invitations()
         the_invitation->print_detailes();
     }
 }
-void Player::print_detailes()
+string Player::get_detailes()
 {
-    cout << "username: " << '"' << username << '"' << endl
-         << "Level: " << get_level() << endl
-         << "RP: " << rp << endl
-         << "XP: " << xp << endl
-         << "Total wins: " << total_wins << endl
-         << "Total losses: " << total_loses << endl;
+    
+    string detail ="username: " + '"' + username + '"' + "\n"
+         + "Level: " + get_level() + "\n"
+         + "RP: " + to_string(rp) + "\n"
+         + "XP: " + to_string(xp) + "\n"
+         + "Total wins: " + to_string(total_wins)  + "\n"
+         + "Total losses: " + to_string(total_loses);
+    return detail;
 }
 void Player::block(User *the_user, string status)
 {
