@@ -114,7 +114,7 @@ void Player::add_invitation(Invitation *the_invitation)
 {
     received_invitations.push_back(the_invitation);
 }
-string Player::user_type()
+string Player::get_user_type()
 {
     return user::PLAYER;
 }

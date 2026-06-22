@@ -29,7 +29,7 @@ public:
     virtual std::string get_player_status();
     virtual std::string get_level();
     virtual void add_invitation(Invitation *the_invitation);
-    virtual std::string user_type() = 0;
+    virtual std::string get_user_type() = 0;
     virtual void set_player_status(std::string the_status);
     virtual void remove_invitation(Invitation *the_invitation);
     virtual std::string get_detailes();

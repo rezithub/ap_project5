@@ -41,7 +41,7 @@ public:
     void set_rp(int newrp) override;
     void add_invitation(Invitation *the_invitation) override;
     void remove_invitation(Invitation *the_invitation) override;
-    std::string user_type() override;
+    std::string get_user_type() override;
     std::string get_player_status() override;
     std::string get_detailes() override;
     void win_match() override;

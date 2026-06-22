@@ -25,7 +25,7 @@ bool compare_by_desc_value(const pair<string, int> &a, const pair<string, int> &
 }
 void Game::add_report(std::string username, std::string reason)
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+    if (logged_in_user == nullptr || logged_in_user->get_user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
     }
@@ -47,7 +47,7 @@ void Game::show_user_invitations()
 }
 void Game::show_reports()
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type() != user::ADMIN)
+    if (logged_in_user == nullptr || logged_in_user->get_user_type() != user::ADMIN)
     {
         throw PermissionDeniedException();
     }
@@ -78,7 +78,7 @@ void Game::remove_match(match *the_match)
 }
 void Game::do_action(string action)
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+    if (logged_in_user == nullptr || logged_in_user->get_user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
     }
@@ -113,7 +113,7 @@ void Game::report_profile(string username, bool show_own)
         throw NotFoundException();
     }
     User *the_user = users.at(username);
-    if (the_user->user_type() == user::ADMIN || (show_own == true && logged_in_user->user_type() == user::ADMIN))
+    if (the_user->get_user_type() == user::ADMIN || (show_own == true && logged_in_user->get_user_type() == user::ADMIN))
     {
         throw PermissionDeniedException();
     }
@@ -121,7 +121,7 @@ void Game::report_profile(string username, bool show_own)
 }
 void Game::show_match_status()
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+    if (logged_in_user == nullptr || logged_in_user->get_user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
     }
@@ -139,7 +139,7 @@ void Game::show_match_status()
 }
 void Game::dismiss_report(string report_id)
 {
-    if (logged_in_user == NULL || logged_in_user->user_type() == user::PLAYER)
+    if (logged_in_user == NULL || logged_in_user->get_user_type() == user::PLAYER)
     {
         throw PermissionDeniedException();
     }
@@ -154,7 +154,7 @@ void Game::dismiss_report(string report_id)
 }
 void Game::block_user(string username, string status)
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+    if (logged_in_user == nullptr || logged_in_user->get_user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
     }
@@ -163,7 +163,7 @@ void Game::block_user(string username, string status)
         throw NotFoundException();
     }
     User *the_user = users.at(username);
-    if (the_user->user_type() == user::ADMIN)
+    if (the_user->get_user_type() == user::ADMIN)
     {
         throw BadRequestException();
     }
@@ -189,7 +189,7 @@ bool Game::check_invitation(string intivation_id)
 }
 void Game::start_match(string id)
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+    if (logged_in_user == nullptr || logged_in_user->get_user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
     }
@@ -243,7 +243,7 @@ void Game::start_match(string id)
 }
 void Game::penalty(int report_id,std::string penalty_type,int amount,int number_of_matches)
 {
-    if (logged_in_user == NULL || logged_in_user->user_type() == user::PLAYER)
+    if (logged_in_user == NULL || logged_in_user->get_user_type() == user::PLAYER)
     {
         throw PermissionDeniedException();
     }
@@ -263,7 +263,7 @@ void Game::penalty(int report_id,std::string penalty_type,int amount,int number_
 }
 void Game::reject_invitation(string id)
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+    if (logged_in_user == nullptr || logged_in_user->get_user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
     }
@@ -333,7 +333,7 @@ void Game::fill_opponents_map(User *the_opponent, map<string, int> &opponents_de
 }
 void Game::show_opponents(string show_type, string match_type)
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+    if (logged_in_user == nullptr || logged_in_user->get_user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
     }
@@ -477,7 +477,7 @@ Game::~Game()
 }
 void Game::post_inviation(string opponent_username, string match_type)
 {
-    if (logged_in_user == nullptr || logged_in_user->user_type() == user::ADMIN)
+    if (logged_in_user == nullptr || logged_in_user->get_user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
     }
@@ -487,7 +487,7 @@ void Game::post_inviation(string opponent_username, string match_type)
     }
     User *the_opponent_user = users.at(opponent_username);
     User *the_player = logged_in_user;
-    if (the_opponent_user->user_type() == user::ADMIN)
+    if (the_opponent_user->get_user_type() == user::ADMIN)
     {
         throw PermissionDeniedException();
     }

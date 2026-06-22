@@ -6,7 +6,7 @@ bool Admin::get_readiness_status()
 {
     return false;
 }
-string Admin::user_type()
+string Admin::get_user_type()
 {
     return user::ADMIN;
 }

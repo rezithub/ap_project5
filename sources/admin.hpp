@@ -8,6 +8,6 @@ private:
 public:
     Admin(std::string _username, std::string _password);
     bool get_readiness_status();
-    std::string user_type() override;
+    std::string get_user_type() override;
 };
 #endif
