@@ -26,7 +26,7 @@ private:
     int next_report_id;
     User *logged_in_user;
     void remove_match(match *the_match);
-    void fill_opponents_map(User *the_opponent, std::map<std::string, int> &opponents_detailes, bool &opponent_exist, std::string match_type);
+    void fill_opponents_map(User *the_opponent, std::map<std::string, int> &opponents_details, bool &opponent_exist, std::string match_type);
 
 public:
     ~Game();

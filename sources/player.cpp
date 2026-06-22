@@ -126,10 +126,10 @@ void Player::show_received_invitations()
     }
     for (Invitation *the_invitation : received_invitations)
     {
-        cout << the_invitation->get_detailes() << endl;
+        cout << the_invitation->get_details() << endl;
     }
 }
-string Player::get_detailes()
+string Player::get_details()
 {
 
     string detail = "username: " + '"' + username + '"' + "\n" + "Level: " + get_level() + "\n" + "RP: " + to_string(rp) + "\n" + "XP: " + to_string(xp) + "\n" + "Total wins: " + to_string(total_wins) + "\n" + "Total losses: " + to_string(total_loses);

@@ -12,6 +12,6 @@ private:
 public:
     Report(int id, std::string _sender_username, std::string _reciever_username, std::string _reason);
     std::string get_reciever();
-    std::string get_deatiles();
+    std::string get_deatils();
 };
 #endif

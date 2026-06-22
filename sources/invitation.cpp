@@ -22,7 +22,7 @@ int Invitation::get_id()
 {
     return id;
 }
-std::string Invitation::get_detailes()
+std::string Invitation::get_details()
 {
     string detail = to_string(id) + ": Invitation from " + '"' + origin_player->get_username() + '"' + " for a " + '"' + match_type + '"' + " match";
     return detail;

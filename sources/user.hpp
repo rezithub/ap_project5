@@ -32,7 +32,7 @@ public:
     virtual std::string get_user_type() = 0;
     virtual void set_player_status(std::string the_status);
     virtual void remove_invitation(Invitation *the_invitation);
-    virtual std::string get_detailes();
+    virtual std::string get_details();
     virtual void show_received_invitations();
     virtual void win_match();
     virtual void lose_match();

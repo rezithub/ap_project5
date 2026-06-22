@@ -8,7 +8,7 @@ Report::Report(int _id, string _sender_username, string _reciever_username, stri
     reciever_username = _reciever_username;
     reason = _reason;
 }
-string Report::get_deatiles()
+string Report::get_deatils()
 {
     string deatail = to_string(id) + ": " + '"' + sender_username + '"' +
                      " reported " + '"' + reciever_username + '"' + " for: " + '"' + reason + '"';

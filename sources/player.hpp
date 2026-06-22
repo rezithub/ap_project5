@@ -43,7 +43,7 @@ public:
     void remove_invitation(Invitation *the_invitation) override;
     std::string get_user_type() override;
     std::string get_player_status() override;
-    std::string get_detailes() override;
+    std::string get_details() override;
     void win_match() override;
     void lose_match() override;
     void show_received_invitations() override;

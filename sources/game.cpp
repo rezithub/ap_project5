@@ -58,7 +58,7 @@ void Game::show_reports()
     }
     for (auto &[id, the_report] : reports)
     {
-        string detail = the_report->get_deatiles();
+        string detail = the_report->get_deatils();
         cout << detail << endl;
     }
 }
@@ -118,7 +118,7 @@ void Game::report_profile(string username, bool show_own)
     {
         throw PermissionDeniedException();
     }
-    cout << the_user->get_detailes() << endl;
+    cout << the_user->get_details() << endl;
 }
 void print_match_history(MatchPlayerState &the_player, MatchPlayerState &the_opponent)
 {
@@ -164,8 +164,8 @@ void Game::show_match_status()
         throw NotFoundException();
     }
     match *the_match = it->second;
-    struct match_info match_detailes = the_match->get_status(logged_in_user);
-    print_match_status(the_match, match_detailes);
+    struct match_info match_details = the_match->get_status(logged_in_user);
+    print_match_status(the_match, match_details);
 }
 void Game::dismiss_report(string report_id)
 {
@@ -324,9 +324,9 @@ void Game::reject_invitation(string id)
     logged_in_user->remove_invitation(the_invitation);
     delete the_invitation;
 }
-void print_opponents_detailes(const map<string, int> &opponents_detailes, string show_type, string match_type)
+void print_opponents_details(const map<string, int> &opponents_details, string show_type, string match_type)
 {
-    vector<pair<string, int>> vector_of_pairs(opponents_detailes.begin(), opponents_detailes.end());
+    vector<pair<string, int>> vector_of_pairs(opponents_details.begin(), opponents_details.end());
     if (show_type == "asc")
     {
         sort(vector_of_pairs.begin(), vector_of_pairs.end(), compare_by_asc_value);
@@ -345,14 +345,14 @@ void print_opponents_detailes(const map<string, int> &opponents_detailes, string
         number++;
     }
 }
-void Game::fill_opponents_map(User *the_opponent, map<string, int> &opponents_detailes, bool &opponent_exist, string match_type)
+void Game::fill_opponents_map(User *the_opponent, map<string, int> &opponents_details, bool &opponent_exist, string match_type)
 {
     if (match_type == "casual")
     {
         if (the_opponent->get_readiness_status())
         {
             opponent_exist = true;
-            opponents_detailes[the_opponent->get_username()] = the_opponent->get_xp();
+            opponents_details[the_opponent->get_username()] = the_opponent->get_xp();
         }
     }
     else if (match_type == "ranked")
@@ -360,7 +360,7 @@ void Game::fill_opponents_map(User *the_opponent, map<string, int> &opponents_de
         if (the_opponent->get_level() == logged_in_user->get_level())
         {
             opponent_exist = true;
-            opponents_detailes[the_opponent->get_username()] = the_opponent->get_rp();
+            opponents_details[the_opponent->get_username()] = the_opponent->get_rp();
         }
     }
 }
@@ -372,20 +372,20 @@ void Game::show_opponents(string show_type, string match_type)
     }
     bool opponent_exist = false;
     User *the_player = logged_in_user;
-    map<string, int> opponents_detailes;
+    map<string, int> opponents_details;
     for (auto &[user_name, the_opponent] : users)
     {
         if (the_opponent == the_player)
         {
             continue;
         }
-        fill_opponents_map(the_opponent, opponents_detailes, opponent_exist, match_type);
+        fill_opponents_map(the_opponent, opponents_details, opponent_exist, match_type);
     }
     if (!opponent_exist)
     {
         throw EmptyException();
     }
-    print_opponents_detailes(opponents_detailes, show_type, match_type);
+    print_opponents_details(opponents_details, show_type, match_type);
 }
 Game::Game()
 {

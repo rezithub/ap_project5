@@ -27,7 +27,7 @@ CommandHandler::CommandHandler(Game &UTGame)
 {
     game = &UTGame;
 }
-void fill_invitation_detailes(string &username, string &match_type, string remaining_line)
+void fill_invitation_details(string &username, string &match_type, string remaining_line)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
@@ -62,7 +62,7 @@ void fill_invitation_detailes(string &username, string &match_type, string remai
         throw BadRequestException();
     }
 }
-void fill_user_detailes(string &username, string &password, string remaining_line)
+void fill_user_details(string &username, string &password, string remaining_line)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
@@ -89,7 +89,7 @@ void fill_user_detailes(string &username, string &password, string remaining_lin
         throw BadRequestException();
     }
 }
-void read_match_detailes(string remaining_line, string &show_type)
+void read_match_details(string remaining_line, string &show_type)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
@@ -136,13 +136,13 @@ void CommandHandler::get_process(string action, string remaining_line)
     if (action == "casual_match_opponents")
     {
         string show_type;
-        read_match_detailes(remaining_line, show_type);
+        read_match_details(remaining_line, show_type);
         game->show_opponents(show_type, "casual");
     }
     else if (action == "ranked_match_opponents")
     {
         string show_type;
-        read_match_detailes(remaining_line, show_type);
+        read_match_details(remaining_line, show_type);
         game->show_opponents(show_type, "ranked");
     }
     else if (action == "profile")
@@ -278,7 +278,7 @@ void read_action(string remaining_line, string &action)
         throw BadRequestException();
     }
 }
-void fill_block_detailes(string remaining_line, string &username, string &status)
+void fill_block_details(string remaining_line, string &username, string &status)
 {
     stringstream ss(remaining_line);
     read_question_symbole(ss);
@@ -309,7 +309,7 @@ void fill_block_detailes(string remaining_line, string &username, string &status
         throw BadRequestException();
     }
 }
-void fill_penalty_detailes(string remainin_line, int &report_id, string &penalty_type, int &amount, int &number_of_matches)
+void fill_penalty_details(string remainin_line, int &report_id, string &penalty_type, int &amount, int &number_of_matches)
 {
     stringstream ss(remainin_line);
     read_question_symbole(ss);
@@ -355,14 +355,14 @@ void CommandHandler::post_process(string action, string remaining_line)
     if (action == "register")
     {
         string username, password;
-        fill_user_detailes(username, password, remaining_line);
+        fill_user_details(username, password, remaining_line);
         game->register_user(username, password);
         cout << "OK" << endl;
     }
     else if (action == "login")
     {
         string username, password;
-        fill_user_detailes(username, password, remaining_line);
+        fill_user_details(username, password, remaining_line);
         game->login_user(username, password);
         cout << "OK" << endl;
     }
@@ -384,7 +384,7 @@ void CommandHandler::post_process(string action, string remaining_line)
     {
         string opponent_username;
         string match_type;
-        fill_invitation_detailes(opponent_username, match_type, remaining_line);
+        fill_invitation_details(opponent_username, match_type, remaining_line);
         if (match_type != Match::CASUAL && match_type != Match::RANKED)
         {
             throw BadRequestException();
@@ -432,7 +432,7 @@ void CommandHandler::post_process(string action, string remaining_line)
     {
         string username;
         string status;
-        fill_block_detailes(remaining_line, username, status);
+        fill_block_details(remaining_line, username, status);
         game->block_user(username, status);
         cout << "OK" << endl;
     }
@@ -440,7 +440,7 @@ void CommandHandler::post_process(string action, string remaining_line)
     {
         int report_id, amount, number_of_matches;
         string penalty_type;
-        fill_penalty_detailes(remaining_line, report_id, penalty_type, amount, number_of_matches);
+        fill_penalty_details(remaining_line, report_id, penalty_type, amount, number_of_matches);
         if (penalty_type == "health_penalty")
         {
             if (amount < 1 || amount > 2)
