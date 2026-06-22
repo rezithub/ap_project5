@@ -129,11 +129,8 @@ void match::resolve_turn()
             end_game_actions(player2, player1, player2_state.get_health());
         }
     }
-    else
-    {
-        player1_state.set_action(action::PENDING);
-        player2_state.set_action(action::PENDING);
-    }
+    player1_state.set_action(action::PENDING);
+    player2_state.set_action(action::PENDING);
 }
 match::match(User *p1, User *p2, int p1_health, int p1_bullets, int p2_health, int p2_bullets)
     : player1_state(p1, p1_health, p1_bullets),

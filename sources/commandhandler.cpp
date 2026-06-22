@@ -314,32 +314,38 @@ void fill_penalty_detailes(string remainin_line, int &report_id, string &penalty
     stringstream ss(remainin_line);
     read_question_symbole(ss);
     string key;
-    bool find_id=false,find_type=false,find_amount=false,find_number=false;
+    bool find_id = false, find_type = false, find_amount = false, find_number = false;
     while (ss >> key)
     {
         read_quote_symbole(ss);
         string value;
-        getline(ss,value,QUOTE_SEPARATOR);
-        if(key=="report_id"){
-            int id=stoi(value);
-            report_id=id;
+        getline(ss, value, QUOTE_SEPARATOR);
+        if (key == "report_id")
+        {
+            int id = stoi(value);
+            report_id = id;
         }
-        else if(key=="type"){
-            penalty_type=value;
+        else if (key == "type")
+        {
+            penalty_type = value;
         }
-        else if(key=="amount"){
-            int penalty_amount=stoi(value);
-            amount=penalty_amount;
+        else if (key == "amount")
+        {
+            int penalty_amount = stoi(value);
+            amount = penalty_amount;
         }
-        else if(key=="number_of_matches"){
-            int number=stoi(value);
-            number_of_matches=number;
-            if(number_of_matches<1){
+        else if (key == "number_of_matches")
+        {
+            int number = stoi(value);
+            number_of_matches = number;
+            if (number_of_matches < 1)
+            {
                 throw BadRequestException();
             }
         }
     }
-    if(!find_id || !find_type || !find_amount || !find_number){
+    if (!find_id || !find_type || !find_amount || !find_number)
+    {
         throw BadRequestException();
     }
 }
@@ -434,21 +440,26 @@ void CommandHandler::post_process(string action, string remaining_line)
     {
         int report_id, amount, number_of_matches;
         string penalty_type;
-        fill_penalty_detailes(remaining_line,report_id,penalty_type,amount,number_of_matches);
-        if(penalty_type=="health_penalty"){
-            if(amount<1 || amount >2){
+        fill_penalty_detailes(remaining_line, report_id, penalty_type, amount, number_of_matches);
+        if (penalty_type == "health_penalty")
+        {
+            if (amount < 1 || amount > 2)
+            {
                 throw BadRequestException();
             }
         }
-        else if(penalty_type=="bullet_penalty"){
-            if(amount<1 || amount >3){
+        else if (penalty_type == "bullet_penalty")
+        {
+            if (amount < 1 || amount > 3)
+            {
                 throw BadRequestException();
             }
         }
-        else{
+        else
+        {
             throw BadRequestException();
         }
-        game->penalty(report_id,penalty_type,amount,number_of_matches);
+        game->penalty(report_id, penalty_type, amount, number_of_matches);
         cout << "OK" << endl;
     }
     else
@@ -518,6 +529,10 @@ void CommandHandler::run()
             cout << e.what() << endl;
         }
         catch (const EmptyException &e)
+        {
+            cout << e.what() << endl;
+        }
+        catch (const LevelMisMatch &e)
         {
             cout << e.what() << endl;
         }
