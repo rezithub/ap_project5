@@ -88,7 +88,7 @@ void match::print_status(User *player)
     string opponent_action = the_opponent.get_current_action();
     if (opponent_action == action::PENDING)
     {
-        cout << "Your opponent: status::pending" << endl;
+        cout << "Your opponent: pending" << endl;
     }
     else
     {
