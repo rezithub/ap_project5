@@ -41,7 +41,7 @@ void rankedmatch::end_game_actions(User *winner, User *loser, int winner_health)
 {
     winner->set_player_status(status::NOT_IN_GAME);
     loser->set_player_status(status::NOT_IN_GAME);
-    is_match_finished=true;
+    is_match_finished = true;
     string players_level = winner->get_level();
     int delta_rp = calculate_delta_rp(players_level);
     int winner_new_rp = winner->get_rp() + delta_rp + (winner_health * 25);
@@ -51,7 +51,7 @@ void rankedmatch::end_game_actions(User *winner, User *loser, int winner_health)
     loser->set_rp(loser_new_rp);
     loser->lose_match();
 }
-void rankedmatch::print_rank_status(int bullets, int health)
+string rankedmatch::get_match_type()
 {
-    cout << "Your remaining health: " << health << endl;
+    return Match::RANKED;
 }

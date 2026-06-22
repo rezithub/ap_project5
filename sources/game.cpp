@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <set>
+#include <iomanip>
 using namespace std;
 
 bool compare_by_asc_value(const pair<string, int> &a, const pair<string, int> &b)
@@ -57,7 +58,7 @@ void Game::show_reports()
     }
     for (auto &[id, the_report] : reports)
     {
-        string detail=the_report->get_deatiles();
+        string detail = the_report->get_deatiles();
         cout << detail << endl;
     }
 }
@@ -119,6 +120,34 @@ void Game::report_profile(string username, bool show_own)
     }
     cout << the_user->get_detailes() << endl;
 }
+void print_match_history(MatchPlayerState &the_player, MatchPlayerState &the_opponent)
+{
+    vector<string> player_history = the_player.get_history();
+    vector<string> opponent_history = the_opponent.get_history();
+    cout << "History:" << endl;
+    cout << left << setw(20) << "Opponent's moves:" << "Your moves:" << endl;
+    for (int i = 0; i < player_history.size(); i++)
+    {
+        cout << left << setw(20) << opponent_history[i] << player_history[i] << endl;
+    }
+}
+void print_match_status(match *the_match, struct match_info &the_match_info)
+{
+    MatchPlayerState &the_player = the_match_info.the_player;
+    MatchPlayerState &the_opponent = the_match_info.the_opponent;
+    cout << "Turn " << the_match_info.current_turn << endl;
+    cout << "You: " << the_player.get_current_action() << endl;
+    string opponent_action = the_opponent.get_current_action();
+    string oppoent_status;
+    opponent_action == action::PENDING ? oppoent_status = "Your opponent: pending" : oppoent_status = "Your opponent: played";
+    cout << oppoent_status << endl;
+    print_match_history(the_player, the_opponent);
+    cout << "Your remaining bullets: " << the_player.get_bullets() << endl;
+    if (the_match->get_match_type() == Match::RANKED)
+    {
+        cout << "Your remaining health: " << the_player.get_health() << endl;
+    }
+}
 void Game::show_match_status()
 {
     if (logged_in_user == nullptr || logged_in_user->get_user_type() == user::ADMIN)
@@ -135,7 +164,8 @@ void Game::show_match_status()
         throw NotFoundException();
     }
     match *the_match = it->second;
-    the_match->print_status(logged_in_user);
+    struct match_info match_detailes = the_match->get_status(logged_in_user);
+    print_match_status(the_match, match_detailes);
 }
 void Game::dismiss_report(string report_id)
 {
@@ -143,7 +173,7 @@ void Game::dismiss_report(string report_id)
     {
         throw PermissionDeniedException();
     }
-    int id=stoi(report_id);
+    int id = stoi(report_id);
     if (reports.count(id) == 0)
     {
         throw NotFoundException();
@@ -241,22 +271,25 @@ void Game::start_match(string id)
     player1->remove_invitation(the_invitation);
     delete the_invitation;
 }
-void Game::penalty(int report_id,std::string penalty_type,int amount,int number_of_matches)
+void Game::penalty(int report_id, std::string penalty_type, int amount, int number_of_matches)
 {
     if (logged_in_user == NULL || logged_in_user->get_user_type() == user::PLAYER)
     {
         throw PermissionDeniedException();
     }
-    if(reports.count(report_id)==0){
+    if (reports.count(report_id) == 0)
+    {
         throw NotFoundException();
     }
     Report *the_report = reports.at(report_id);
-    User* penalized_player=users.at(the_report->get_reciever());
-    if(penalty_type=="health_penalty"){
-        penalized_player->health_penalty(amount,number_of_matches);
+    User *penalized_player = users.at(the_report->get_reciever());
+    if (penalty_type == "health_penalty")
+    {
+        penalized_player->health_penalty(amount, number_of_matches);
     }
-    else if(penalty_type=="bullet_penalty"){
-        penalized_player->bullet_penalty(amount,number_of_matches);
+    else if (penalty_type == "bullet_penalty")
+    {
+        penalized_player->bullet_penalty(amount, number_of_matches);
     }
     reports.erase(report_id);
     delete the_report;

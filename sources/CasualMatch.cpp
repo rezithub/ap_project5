@@ -18,3 +18,7 @@ void CasualMatch::end_game_actions(User *winner, User *loser, int winner_health)
     winner->win_match();
     loser->lose_match();
 }
+string CasualMatch::get_match_type()
+{
+    return Match::CASUAL;
+}

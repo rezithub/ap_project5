@@ -3,6 +3,14 @@
 #include "matchplayer.hpp"
 #include "exceptions.hpp"
 #include <string>
+
+struct match_info
+{
+    MatchPlayerState &the_player;
+    MatchPlayerState &the_opponent;
+    int current_turn;
+};
+
 class match
 {
 protected:
@@ -15,13 +23,13 @@ protected:
     void do_action(User *player, std::string action);
     MatchPlayerState &get_my_state(User *player);
     MatchPlayerState &get_opponent_state(User *player);
-    virtual void print_rank_status(int bullets, int health) = 0;
 
 public:
     match(User *player1, User *p2, int player1_health, int player1_bullets, int player2_health, int player2_bullets);
     void register_action(User *player, std::string action);
     bool get_match_status();
-    void print_status(User *player);
+    struct match_info get_status(User *player);
+    virtual std::string get_match_type() = 0;
 };
 
 #endif

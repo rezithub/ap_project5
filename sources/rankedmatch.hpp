@@ -10,7 +10,7 @@ private:
 
 public:
     rankedmatch(User *player1, User *player2);
-    void print_rank_status(int bullets, int health) override;
+    std::string get_match_type() override;
 };
 
 #endif
